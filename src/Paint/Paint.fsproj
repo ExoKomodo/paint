@@ -17,20 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Resources\Shaders\Board\*.*" >
+    <Content Include="Resources\Shaders\*\*.*" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Shaders\Checker\*.*" >
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Shaders\Common\*.*" >
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Shaders\UI\CommandPanel\*.*" >
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Compile Include="UI/Board.fs" />
     <Compile Include="UI/CommandPanel.fs" />
-    <Compile Include="Board.fs" />
     <Compile Include="Scene/PaintScene.fs" />
     <Compile Include="Program.fs" />
     <ProjectReference Include="..\engine\src\Womb\Womb.fsproj">

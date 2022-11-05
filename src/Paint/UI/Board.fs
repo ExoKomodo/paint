@@ -1,4 +1,4 @@
-module Paint.Board
+module Paint.UI.Board
 
 open Womb
 open Womb.Graphics

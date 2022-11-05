@@ -1,6 +1,7 @@
 module Paint.Scene.PaintScene
 
 open Paint.Board
+open Paint.UI.Board
 open Paint.UI.CommandPanel
 open System
 open Womb
