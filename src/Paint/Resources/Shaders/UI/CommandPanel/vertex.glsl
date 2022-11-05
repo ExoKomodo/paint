@@ -15,7 +15,7 @@ void main()
                     1.0 +
                     commonScale
                 ) / 2.0
-            )
+            ) - 0.01
         ) * xScale,
         position.y * yScale,
         position.z,
