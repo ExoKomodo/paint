@@ -1,0 +1,51 @@
+pipeline {
+  agent any
+
+  options {
+    disableConcurrentBuilds()
+    ansiColor('xterm')
+  }
+
+  environment {
+    CI_PRD_BRANCH = 'main'
+    CICADA_REGISTRY_PASSWORD = credentials('docker-password')
+    CICADA_REGISTRY_USERNAME = credentials('docker-username')
+    CICADA_NAME = 'paint'
+
+    CICADA_DOCKER_HUB_DEV_PROJECT = 'development'
+    CICADA_DOCKER_HUB_PRD_PROJECT = 'paint'
+    CICADA_DOCKER_HUB_USERNAME = 'exokomodo'
+  }
+
+  stages {
+    stage('docker login') {
+      steps {
+        sh "bash ${CICADA_CI_DIR}/container_login.bash"
+      }
+    }
+
+    stage('[paint]') {
+      environment {
+        DOTNET_BUILD_PROJECT = "src/Paint/Paint.fsproj"
+      }
+
+      stages {
+        stage('[paint] build') {
+          environment {
+            DOTNET_BUILD_CONFIGURATION = "Debug"
+          }
+
+          steps {
+            sh "bash ${CICADA_COMPOSE} paint-build build"
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    cleanup {
+      sh "bash ${CICADA_CI_DIR}/cleanup.bash"
+    }
+  }
+}

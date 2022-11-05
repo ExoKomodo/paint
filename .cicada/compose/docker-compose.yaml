@@ -1,0 +1,16 @@
+version: '3'
+services:
+  build:
+    build:
+      context: .
+      dockerfile: ${CICADA_COMPOSE_DIR}/paint/Dockerfile
+    command: bash /app/compose_scripts/build.sh ${DOTNET_BUILD_PROJECT} ${DOTNET_BUILD_CONFIGURATION}
+    volumes:
+      - .:/app:rw
+  fix_ownership:
+    build:
+      context: .
+      dockerfile: ${CICADA_COMPOSE_DIR}/paint/Dockerfile
+    command: bash /app/${CICADA_CI_DIR}/fix_ownership.bash
+    volumes:
+      - .:/app:rw

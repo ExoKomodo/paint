@@ -1,0 +1,8 @@
+[submodule "womb"]
+	path = src/engine
+	url = git@github.com:ExoKomodo/womb.git
+	branch = main
+[submodule "cicada"]
+	path = .cicada/head
+	url = git@github.com:ExoKomodo/cicada.git
+	branch = main
