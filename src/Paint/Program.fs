@@ -1,6 +1,5 @@
 open Argu
-open Paint.Board
-open Paint.UI.CommandPanel
+open Paint.Scene.PaintScene
 open Womb
 open Womb.Graphics
 open System
@@ -22,27 +21,18 @@ let mutable private boardPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
 
 let private initHandler config =
-  boardPrimitive <- createBoard
-  commandPanelPrimitive <- createCommandPanel
-  match Display.compileShader boardPrimitive.VertexShaderPath boardPrimitive.FragmentShaderPath with
-  | Some(boardShader) -> 
-      boardPrimitive <-
-        { boardPrimitive with
-            Shader = boardShader
-            VertexData = Primitives.VertexObjectData.From boardPrimitive.Vertices boardPrimitive.Indices }
-      match Display.compileShader commandPanelPrimitive.VertexShaderPath commandPanelPrimitive.FragmentShaderPath with
-      | Some(commandPanelShader) -> 
-          commandPanelPrimitive <-
-            { commandPanelPrimitive with
-                Shader = commandPanelShader
-                VertexData = Primitives.VertexObjectData.From commandPanelPrimitive.Vertices commandPanelPrimitive.Indices }
-          config
-      | None ->
-          Logging.fail "Failed to compile command panel shader"
-          config
-  | None ->
-      Logging.fail "Failed to compile board shader"
-      config
+  match Paint.Scene.PaintScene.create config with
+  | (newConfig, Some(board), None) ->
+    Logging.fail "Failed to create Command Panel after creating Board"
+    boardPrimitive <- board
+    newConfig
+  | (newConfig, Some(board), Some(commandPanel)) ->
+    boardPrimitive <- board
+    commandPanelPrimitive <- commandPanel
+    newConfig
+  | _ ->
+    Logging.fail "Total failure to create Paint Scene"
+    config
 
 let private drawHandler config =
   let config = Display.clear config
