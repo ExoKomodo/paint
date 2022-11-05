@@ -12,7 +12,10 @@ void main()
             position.x -
             (
                 1.0 - (
-                    commonScale /
+                    (
+                        1.0 -
+                        commonScale
+                    ) /
                     2.0
                 )
             )
