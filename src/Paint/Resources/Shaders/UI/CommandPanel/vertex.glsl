@@ -9,11 +9,14 @@ void main()
 {
     gl_Position = vec4(
         (
+            position.x -
             (
-                position.x -
-                1.05
-            ) * xScale
-        ),
+                1.0 - (
+                    commonScale /
+                    2.0
+                )
+            )
+        ) * xScale,
         position.y * yScale,
         position.z,
         1.0
