@@ -1,14 +1,13 @@
 module Paint.Scene.PaintScene
 
-open Paint.Board
 open Paint.UI.Board
 open Paint.UI.CommandPanel
 open System
 open Womb
 open Womb.Graphics
 
-let create config =
-  match Paint.Board.create with
+let createUI config =
+  match Paint.UI.Board.create with
   | Some(board) ->
     match Paint.UI.CommandPanel.create with
     | Some(commandPanel) ->

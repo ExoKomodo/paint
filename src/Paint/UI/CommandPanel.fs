@@ -12,13 +12,13 @@ let create =
           VertexShaderPath = "Resources/Shaders/UI/CommandPanel/vertex.glsl" }
       [|
         // bottom left
-        -1f; -1f; 0.0f;
+        -0.05f; -1f; 0.0f;
         // shared top left
-        -1f; 1f; 0.0f;
+        -0.05f; 1f; 0.0f;
         // shared bottom right
-        -0.9f; -1f; 0.0f;
+        0.05f; -1f; 0.0f;
         // top right
-        -0.9f; 1f; 0.0f;
+        0.05f; 1f; 0.0f;
       |]
       [|
         0u; 1u; 2u; // first triangle vertex order as array indices

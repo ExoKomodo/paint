@@ -8,8 +8,8 @@ let create =
   let board = 
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPath = "Resources/Shaders/Board/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/Board/vertex.glsl" }
+          FragmentShaderPath = "Resources/Shaders/UI/Board/fragment.glsl"
+          VertexShaderPath = "Resources/Shaders/UI/Board/vertex.glsl" }
       [|
         // bottom left
         -1f; -1f; 0.0f;

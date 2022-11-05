@@ -21,17 +21,17 @@ let mutable private boardPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
 
 let private initHandler config =
-  match Paint.Scene.PaintScene.create config with
-  | (newConfig, Some(board), None) ->
-    Logging.fail "Failed to create Command Panel after creating Board"
-    boardPrimitive <- board
-    newConfig
+  match Paint.Scene.PaintScene.createUI config with
   | (newConfig, Some(board), Some(commandPanel)) ->
     boardPrimitive <- board
     commandPanelPrimitive <- commandPanel
     newConfig
+  | (newConfig, Some(board), None) ->
+    Logging.fail "Successfully create UI board but failed to create UI Command Panel for Paint Scene"
+    boardPrimitive <- board
+    newConfig
   | _ ->
-    Logging.fail "Total failure to create Paint Scene"
+    Logging.fail "Failed to create UI for Paint Scene"
     config
 
 let private drawHandler config =
