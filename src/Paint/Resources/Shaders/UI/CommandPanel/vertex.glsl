@@ -11,7 +11,7 @@ void main()
         (
             (
                 position.x -
-                1.0
+                1.05
             ) * xScale
         ),
         position.y * yScale,
