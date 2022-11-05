@@ -22,6 +22,8 @@
     <Content Include="Resources\Shaders\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Compile Include="UI/CommandPanel.fs" />
+    <Compile Include="Board.fs" />
     <Compile Include="Program.fs" />
     <ProjectReference Include="..\engine\src\Womb\Womb.fsproj">
       <Properties Condition="$(DefineConstants.Contains('DEBUG'))">

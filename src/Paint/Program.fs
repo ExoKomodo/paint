@@ -1,4 +1,6 @@
 open Argu
+open Paint.Board
+open Paint.UI.CommandPanel
 open Womb
 open Womb.Graphics
 open System
@@ -16,41 +18,36 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let mutable private primitive = Primitives.ShadedObject.Default
+let mutable private boardPrimitive = Primitives.ShadedObject.Default
+let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
 
 let private initHandler config =
-  primitive <-
-    Primitives.ShadedObject.From
-      { primitive with
-          FragmentShaderPath = "Resources/Shaders/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/vertex.glsl" }
-      [|
-        0.0f; -0.5f; 0.0f;  // shared vertex
-        // first triangle
-        -0.9f; -0.5f; 0.0f; // left vertex
-        -0.45f; 0.5f; 0.0f; // top vertex
-        // second triangle
-        0.9f; -0.5f; 0.0f;  // right vertex
-        0.45f; 0.5f; 0.0f;  // top vertex
-      |]
-      [|
-        0u; 1u; 2u; // first triangle vertex order as array indices
-        0u; 3u; 4u; // second triangle vertex order as array indices
-      |]
-  match Display.compileShader primitive.VertexShaderPath primitive.FragmentShaderPath with
-  | Some(shader) -> 
-      primitive <-
-        { primitive with
-            Shader = shader
-            VertexData = Primitives.VertexObjectData.From primitive.Vertices primitive.Indices }
-      config
+  boardPrimitive <- createBoard
+  commandPanelPrimitive <- createCommandPanel
+  match Display.compileShader boardPrimitive.VertexShaderPath boardPrimitive.FragmentShaderPath with
+  | Some(boardShader) -> 
+      boardPrimitive <-
+        { boardPrimitive with
+            Shader = boardShader
+            VertexData = Primitives.VertexObjectData.From boardPrimitive.Vertices boardPrimitive.Indices }
+      match Display.compileShader commandPanelPrimitive.VertexShaderPath commandPanelPrimitive.FragmentShaderPath with
+      | Some(commandPanelShader) -> 
+          commandPanelPrimitive <-
+            { commandPanelPrimitive with
+                Shader = commandPanelShader
+                VertexData = Primitives.VertexObjectData.From commandPanelPrimitive.Vertices commandPanelPrimitive.Indices }
+          config
+      | None ->
+          Logging.fail "Failed to compile command panel shader"
+          config
   | None ->
-      Logging.fail "Failed to compile shader"
+      Logging.fail "Failed to compile board shader"
       config
 
 let private drawHandler config =
   let config = Display.clear config
-  Primitives.drawShadedObject primitive
+  Primitives.drawShadedObject boardPrimitive
+  Primitives.drawShadedObject commandPanelPrimitive
   Display.swap config
 
 [<EntryPoint>]
