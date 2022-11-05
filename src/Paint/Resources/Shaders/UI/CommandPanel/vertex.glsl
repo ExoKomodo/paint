@@ -11,13 +11,10 @@ void main()
         (
             position.x -
             (
-                1.0 - (
-                    (
-                        1.0 -
-                        commonScale
-                    ) /
-                    2.0
-                )
+                (
+                    1.0 +
+                    commonScale
+                ) / 2.0
             )
         ) * xScale,
         position.y * yScale,
