@@ -17,7 +17,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Resources\Shaders\*\*.*" >
+    <Content Include="Resources\Shaders\*\*.glsl" >
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Shaders\*\*\*.glsl" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="UI/Board.fs" />
