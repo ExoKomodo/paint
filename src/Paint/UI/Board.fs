@@ -9,14 +9,14 @@ let create =
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
           FragmentShaderPath = "Resources/Shaders/UI/Board/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/UI/Board/vertex.glsl" }
+          VertexShaderPath = "Resources/Shaders/UI/vertex.glsl" }
       [|
         // bottom left
-        -1f; -1f; 0.0f;
+        0.1f; 0f; 0.0f;
         // shared top left
-        -1f; 1f; 0.0f;
+        0.1f; 1f; 0.0f;
         // shared bottom right
-        1f; -1f; 0.0f;
+        1f; 0f; 0.0f;
         // top right
         1f; 1f; 0.0f;
       |]
