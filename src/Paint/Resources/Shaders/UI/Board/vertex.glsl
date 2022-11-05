@@ -8,8 +8,19 @@ const float yScale = commonScale;
 void main()
 {
     gl_Position = vec4(
-        (position.x + (commonScale / 2.0)) * xScale,
-        position.y * yScale,
+        (
+            position.x +
+            (
+                (
+                    1.0 -
+                    commonScale
+                ) / 2.0
+            )
+        ) * xScale,
+        (
+            position.y *
+            yScale
+        ),
         position.z,
         1.0
     );
