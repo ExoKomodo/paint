@@ -40,6 +40,7 @@
         DefineConstants=$(DefineConstants);INLINE_LOGGER
       </Properties>
     </ProjectReference>
+    <Compile Include="Graphics.fs" />
     <Compile Include="Brushes/LineBrush.fs" />
     <Compile Include="UI/Canvas.fs" />
     <Compile Include="UI/CommandPanel.fs" />

@@ -2,6 +2,7 @@ open Argu
 open System
 open Womb
 open Womb.Graphics
+open Paint.Graphics
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -18,15 +19,22 @@ type CliArguments =
 
 let mutable private canvasPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
+let mutable private lineBrushPrimitive = Primitives.ShadedObject.Default
 
 let private initHandler config =
   match Paint.Scene.PaintScene.createUI config with
-  | (newConfig, Some(canvas), Some(commandPanel)) ->
+  | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
+    canvasPrimitive <- canvas
+    commandPanelPrimitive <- commandPanel
+    lineBrushPrimitive <- lineBrush
+    newConfig
+  | (newConfig, Some(canvas), Some(commandPanel), None) ->
+    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
     canvasPrimitive <- canvas
     commandPanelPrimitive <- commandPanel
     newConfig
-  | (newConfig, Some(canvas), None) ->
-    Logging.fail "Successfully create UI canvas but failed to create UI Command Panel for Paint Scene"
+  | (newConfig, Some(canvas), None, None) ->
+    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Paint Scene"
     canvasPrimitive <- canvas
     newConfig
   | _ ->
@@ -37,6 +45,7 @@ let private drawHandler config =
   let config = Display.clear config
   Primitives.drawShadedObject canvasPrimitive
   Primitives.drawShadedObject commandPanelPrimitive
+  Paint.Graphics.drawShadedLine lineBrushPrimitive
   Display.swap config
 
 [<EntryPoint>]
