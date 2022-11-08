@@ -1,8 +1,7 @@
 open Argu
-open Paint.Scene.PaintScene
+open System
 open Womb
 open Womb.Graphics
-open System
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
