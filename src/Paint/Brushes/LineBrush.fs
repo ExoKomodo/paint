@@ -1,6 +1,7 @@
 module Paint.Brushes.LineBrush
 
 open Womb
+open Womb.Backends.OpenGL.Api.Constants
 open Womb.Graphics
 
 type Point = single * single * single
@@ -18,8 +19,12 @@ let create (data:LineBrushData) =
   let lineBrush = (
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPath = "Resources/Shaders/Brushes/LineBrush/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/Brushes/LineBrush/vertex.glsl" }
+          FragmentShaderPaths = ["Resources/Shaders/Brushes/LineBrush/fragment.glsl"]
+          VertexShaderPaths = [
+            "Resources/Shaders/Lib/map.glsl";
+            "Resources/Shaders/Common/vertex.glsl";
+          ]
+      }
       [|
         startX; startY; startZ;
         endX; endY; endZ;
@@ -29,7 +34,9 @@ let create (data:LineBrushData) =
       |]
   )
 
-  match Display.compileShader lineBrush.VertexShaderPath lineBrush.FragmentShaderPath with
+  match (
+    Display.compileShader lineBrush.VertexShaderPaths lineBrush.FragmentShaderPaths
+   ) with
   | Some(shader) -> 
       Some(
         { lineBrush with

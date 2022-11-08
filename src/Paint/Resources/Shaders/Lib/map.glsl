@@ -1,7 +1,4 @@
 #version 330 core
-layout (location = 0) in vec2 position;   // the position variable has attribute position 0
-
-const float zoom = 0.9;
 
 float map(float value, float low1, float high1, float low2, float high2) {
     return (
@@ -19,35 +16,36 @@ float map(float value, float low1, float high1, float low2, float high2) {
     );
 }
 
-vec4 mapPositionToOpenGL(vec2 positionToMap) {
+vec4 mapPosition3D(vec3 positionToMap, float zoom) {
     const float originalMinCoord = 0.0;
     const float originalMaxCoord = 1.0;
-    const float openGlMinCoord = -1.0;
-    const float openGlMaxCoord = 1.0;
+    const float newMinCoord = -1.0;
+    const float newMaxCoord = 1.0;
 
     return vec4(
-        vec2(
+        zoom * vec3(
             map(
                 positionToMap.x,
                 originalMinCoord,
                 originalMaxCoord,
-                openGlMinCoord,
-                openGlMaxCoord
+                newMinCoord,
+                newMaxCoord
             ),
             map(
                 positionToMap.y,
                 originalMinCoord,
                 originalMaxCoord,
-                openGlMinCoord,
-                openGlMaxCoord
+                newMinCoord,
+                newMaxCoord
+            ),
+            map(
+                positionToMap.z,
+                originalMinCoord,
+                originalMaxCoord,
+                newMinCoord,
+                newMaxCoord
             )
-        ) * zoom,
-        1.0,
+        ),
         1.0
     );
-}
-
-void main()
-{
-    gl_Position = mapPositionToOpenGL(position);
 }

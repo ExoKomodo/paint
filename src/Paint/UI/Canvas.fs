@@ -8,8 +8,12 @@ let create =
   let canvas = 
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPath = "Resources/Shaders/UI/Canvas/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/UI/vertex.glsl" }
+          FragmentShaderPaths = ["Resources/Shaders/UI/Canvas/fragment.glsl"]
+          VertexShaderPaths = [
+            "Resources/Shaders/Lib/map.glsl";
+            "Resources/Shaders/Common/vertex.glsl";
+          ]
+      }
       [|
         // bottom left
         0.1f; 0.0f; 0.0f;
@@ -25,7 +29,11 @@ let create =
         1u; 2u; 3u; // second triangle vertex order as array indices
       |]
 
-  match Display.compileShader canvas.VertexShaderPath canvas.FragmentShaderPath with
+  match (
+    Display.compileShader
+      canvas.VertexShaderPaths
+      canvas.FragmentShaderPaths
+   ) with
   | Some(shader) -> 
       Some(
         { canvas with
