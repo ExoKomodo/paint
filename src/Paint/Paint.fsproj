@@ -23,10 +23,12 @@
     <Content Include="Resources\Shaders\*\*\*.glsl" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Compile Include="UI/Board.fs" />
-    <Compile Include="UI/CommandPanel.fs" />
-    <Compile Include="Scene/PaintScene.fs" />
-    <Compile Include="Program.fs" />
+    <PackageReference Include="FSharp.Core" Version="5.0.2">
+      <GeneratePathProperty></GeneratePathProperty>
+    </PackageReference>
+    <PackageReference Include="Argu" Version="6.1.1">
+      <GeneratePathProperty></GeneratePathProperty>
+    </PackageReference>
     <ProjectReference Include="..\engine\src\Womb\Womb.fsproj">
       <Properties Condition="$(DefineConstants.Contains('DEBUG'))">
         DefineConstants=$(DefineConstants);DEBUG
@@ -38,11 +40,9 @@
         DefineConstants=$(DefineConstants);INLINE_LOGGER
       </Properties>
     </ProjectReference>
-    <PackageReference Include="FSharp.Core" Version="5.0.2">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
-    <PackageReference Include="Argu" Version="6.1.1">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
+    <Compile Include="UI/Board.fs" />
+    <Compile Include="UI/CommandPanel.fs" />
+    <Compile Include="Scene/PaintScene.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 </Project>
