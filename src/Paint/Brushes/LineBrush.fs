@@ -1,34 +1,42 @@
 module Paint.Brushes.LineBrush
 
 open Womb
+open Womb.Backends.OpenGL.Api.Constants
 open Womb.Graphics
-open System
 
-type Point = single * single
+type Point = single * single * single
 
 type LineBrushData = {
   Start: Point;
   End: Point;
 }
 
+let pointNew2D x y = Point(x, y, 1.0f)
+
 let create (data:LineBrushData) =
-  let startX, startY = data.Start
-  let endX, endY = data.End
+  let startX, startY, startZ = data.Start
+  let endX, endY, endZ = data.End
   let lineBrush = (
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPath = "Resources/Shaders/Brushes/LineBrush/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/Brushes/LineBrush/vertex.glsl" }
+          FragmentShaderPaths = ["Resources/Shaders/Brushes/LineBrush/fragment.glsl"]
+          VertexShaderPaths = [
+            "Resources/Shaders/Lib/map.glsl";
+            "Resources/Shaders/Common/vertex.glsl";
+          ]
+      }
       [|
-        startX; startY; 1f;
-        endX; endY; 1f;
+        startX; startY; startZ;
+        endX; endY; endZ;
       |]
       [|
         0u; 1u;
       |]
   )
 
-  match Display.compileShader lineBrush.VertexShaderPath lineBrush.FragmentShaderPath with
+  match (
+    Display.compileShader lineBrush.VertexShaderPaths lineBrush.FragmentShaderPaths
+   ) with
   | Some(shader) -> 
       Some(
         { lineBrush with

@@ -1,6 +1,7 @@
 module Paint.UI.CommandPanel
 
 open Womb
+open Womb.Backends.OpenGL.Api.Constants
 open Womb.Graphics
 open System
 
@@ -8,24 +9,32 @@ let create =
   let commandPanel =
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPath = "Resources/Shaders/UI/CommandPanel/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/UI/vertex.glsl" }
+          FragmentShaderPaths = ["Resources/Shaders/UI/CommandPanel/fragment.glsl"]
+          VertexShaderPaths = [
+            "Resources/Shaders/Lib/map.glsl";
+            "Resources/Shaders/Common/vertex.glsl";
+          ]
+      }
       [|
         // bottom left
-        0f; 0f; 0.0f;
+        0.0f; 0.0f; 0.0f;
         // shared top left
-        0f; 1f; 0.0f;
+        0.0f; 1.0f; 0.0f;
         // shared bottom right
-        0.1f; 0f; 0.0f;
+        0.1f; 0.0f; 0.0f;
         // top right
-        0.1f; 1f; 0.0f;
+        0.1f; 1.0f; 0.0f;
       |]
       [|
         0u; 1u; 2u; // first triangle vertex order as array indices
         1u; 2u; 3u; // second triangle vertex order as array indices
       |]
 
-  match Display.compileShader commandPanel.VertexShaderPath commandPanel.FragmentShaderPath with
+  match (
+    Display.compileShader
+      commandPanel.VertexShaderPaths
+      commandPanel.FragmentShaderPaths
+  ) with
   | Some(shader) -> 
       Some(
         { commandPanel with
