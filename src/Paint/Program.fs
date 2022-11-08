@@ -1,7 +1,8 @@
 open Argu
+open System
 open Womb
 open Womb.Graphics
-open System
+open Paint.Graphics
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -16,41 +17,35 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let mutable private primitive = Primitives.ShadedObject.Default
+let mutable private canvasPrimitive = Primitives.ShadedObject.Default
+let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
+let mutable private lineBrushPrimitive = Primitives.ShadedObject.Default
 
 let private initHandler config =
-  primitive <-
-    Primitives.ShadedObject.From
-      { primitive with
-          FragmentShaderPath = "Resources/Shaders/fragment.glsl"
-          VertexShaderPath = "Resources/Shaders/vertex.glsl" }
-      [|
-        0.0f; -0.5f; 0.0f;  // shared vertex
-        // first triangle
-        -0.9f; -0.5f; 0.0f; // left vertex
-        -0.45f; 0.5f; 0.0f; // top vertex
-        // second triangle
-        0.9f; -0.5f; 0.0f;  // right vertex
-        0.45f; 0.5f; 0.0f;  // top vertex
-      |]
-      [|
-        0u; 1u; 2u; // first triangle vertex order as array indices
-        0u; 3u; 4u; // second triangle vertex order as array indices
-      |]
-  match Display.compileShader primitive.VertexShaderPath primitive.FragmentShaderPath with
-  | Some(shader) -> 
-      primitive <-
-        { primitive with
-            Shader = shader
-            VertexData = Primitives.VertexObjectData.From primitive.Vertices primitive.Indices }
-      config
-  | None ->
-      Logging.fail "Failed to compile shader"
-      config
+  match Paint.Scene.PaintScene.createUI config with
+  | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
+    canvasPrimitive <- canvas
+    commandPanelPrimitive <- commandPanel
+    lineBrushPrimitive <- lineBrush
+    newConfig
+  | (newConfig, Some(canvas), Some(commandPanel), None) ->
+    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
+    canvasPrimitive <- canvas
+    commandPanelPrimitive <- commandPanel
+    newConfig
+  | (newConfig, Some(canvas), None, None) ->
+    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Paint Scene"
+    canvasPrimitive <- canvas
+    newConfig
+  | _ ->
+    Logging.fail "Failed to create UI for Paint Scene"
+    config
 
 let private drawHandler config =
   let config = Display.clear config
-  Primitives.drawShadedObject primitive
+  Primitives.drawShadedObject canvasPrimitive
+  Primitives.drawShadedObject commandPanelPrimitive
+  Paint.Graphics.drawShadedLine lineBrushPrimitive
   Display.swap config
 
 [<EntryPoint>]

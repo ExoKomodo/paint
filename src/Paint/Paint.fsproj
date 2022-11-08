@@ -17,12 +17,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Resources\Shaders\fragment.glsl" />
-    <Content Include="Resources\Shaders\vertex.glsl" />
-    <Content Include="Resources\Shaders\*.*">
+    <Content Include="Resources\Shaders\*\*.glsl" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Program.fs" />
+    <Content Include="Resources\Shaders\*\*\*.glsl" >
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <PackageReference Include="FSharp.Core" Version="5.0.2">
+      <GeneratePathProperty></GeneratePathProperty>
+    </PackageReference>
+    <PackageReference Include="Argu" Version="6.1.1">
+      <GeneratePathProperty></GeneratePathProperty>
+    </PackageReference>
     <ProjectReference Include="..\engine\src\Womb\Womb.fsproj">
       <Properties Condition="$(DefineConstants.Contains('DEBUG'))">
         DefineConstants=$(DefineConstants);DEBUG
@@ -34,11 +40,11 @@
         DefineConstants=$(DefineConstants);INLINE_LOGGER
       </Properties>
     </ProjectReference>
-    <PackageReference Include="FSharp.Core" Version="5.0.2">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
-    <PackageReference Include="Argu" Version="6.1.1">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
+    <Compile Include="Graphics.fs" />
+    <Compile Include="Brushes/LineBrush.fs" />
+    <Compile Include="UI/Canvas.fs" />
+    <Compile Include="UI/CommandPanel.fs" />
+    <Compile Include="Scene/PaintScene.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 </Project>
