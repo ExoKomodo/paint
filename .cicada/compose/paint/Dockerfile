@@ -1,1 +1,1 @@
-FROM exokomodo/paint:base-latest
+FROM exokomodo/development:draw-ui-base-latest
