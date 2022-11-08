@@ -1,5 +1,5 @@
 #version 330 core
-layout (location = 0) in vec3 position;   // the position variable has attribute position 0
+layout (location = 0) in vec3 position;
 
 vec4 mapPosition3D(vec3 positionToMap, float zoom);
 
