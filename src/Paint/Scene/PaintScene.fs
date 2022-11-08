@@ -1,19 +1,17 @@
 module Paint.Scene.PaintScene
 
-open Paint.UI.Canvas
-open Paint.UI.CommandPanel
-open System
+open Paint.Brushes
+open Paint.UI
 open Womb
-open Womb.Graphics
 
 let createUI config =
-  match Paint.UI.Canvas.create with
+  match Canvas.create with
   | Some(canvas) ->
-    match Paint.UI.CommandPanel.create with
+    match CommandPanel.create with
     | Some(commandPanel) ->
-      match Paint.Brushes.LineBrush.create {
-        Start=0f, 0.5f;
-        End=1f, 1f;
+      match LineBrush.create {
+        Start=(LineBrush.pointNew2D 0f 0.5f);
+        End=(LineBrush.pointNew2D 1f 1f);
       } with
       | Some(lineBrush) ->
         (config, Some(canvas), Some(commandPanel), Some(lineBrush))
