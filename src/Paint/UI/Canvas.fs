@@ -1,14 +1,14 @@
-module Paint.UI.Board
+module Paint.UI.Canvas
 
 open Womb
 open Womb.Graphics
 open System
 
 let create =
-  let board = 
+  let canvas = 
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPath = "Resources/Shaders/UI/Board/fragment.glsl"
+          FragmentShaderPath = "Resources/Shaders/UI/Canvas/fragment.glsl"
           VertexShaderPath = "Resources/Shaders/UI/vertex.glsl" }
       [|
         // bottom left
@@ -25,13 +25,13 @@ let create =
         1u; 2u; 3u; // second triangle vertex order as array indices
       |]
 
-  match Display.compileShader board.VertexShaderPath board.FragmentShaderPath with
+  match Display.compileShader canvas.VertexShaderPath canvas.FragmentShaderPath with
   | Some(shader) -> 
       Some(
-        { board with
+        { canvas with
             Shader = shader
-            VertexData = Primitives.VertexObjectData.From board.Vertices board.Indices }
+            VertexData = Primitives.VertexObjectData.From canvas.Vertices canvas.Indices }
       )
   | None ->
-      Logging.fail "Failed to compile board shader"
+      Logging.fail "Failed to compile canvas shader"
       None

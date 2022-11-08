@@ -16,18 +16,18 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let mutable private boardPrimitive = Primitives.ShadedObject.Default
+let mutable private canvasPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
 
 let private initHandler config =
   match Paint.Scene.PaintScene.createUI config with
-  | (newConfig, Some(board), Some(commandPanel)) ->
-    boardPrimitive <- board
+  | (newConfig, Some(canvas), Some(commandPanel)) ->
+    canvasPrimitive <- canvas
     commandPanelPrimitive <- commandPanel
     newConfig
-  | (newConfig, Some(board), None) ->
-    Logging.fail "Successfully create UI board but failed to create UI Command Panel for Paint Scene"
-    boardPrimitive <- board
+  | (newConfig, Some(canvas), None) ->
+    Logging.fail "Successfully create UI canvas but failed to create UI Command Panel for Paint Scene"
+    canvasPrimitive <- canvas
     newConfig
   | _ ->
     Logging.fail "Failed to create UI for Paint Scene"
@@ -35,7 +35,7 @@ let private initHandler config =
 
 let private drawHandler config =
   let config = Display.clear config
-  Primitives.drawShadedObject boardPrimitive
+  Primitives.drawShadedObject canvasPrimitive
   Primitives.drawShadedObject commandPanelPrimitive
   Display.swap config
 
