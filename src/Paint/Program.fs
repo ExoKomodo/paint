@@ -2,7 +2,7 @@ open Argu
 open System
 open Womb
 open Womb.Graphics
-open Paint.Graphics
+open System.Numerics
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -43,8 +43,13 @@ let private initHandler config =
 
 let private drawHandler config =
   let config = Display.clear config
-  Primitives.drawShadedObject canvasPrimitive
-  Primitives.drawShadedObject commandPanelPrimitive
+  ( Paint.Graphics.drawTransformedShadedObject
+      canvasPrimitive
+      (Vector3.One)
+      Vector3.Zero
+      (Vector3.Zero)
+  )
+  // Primitives.drawShadedObject commandPanelPrimitive
   Paint.Graphics.drawShadedLine lineBrushPrimitive
   Display.swap config
 
