@@ -45,9 +45,9 @@ let private drawHandler config =
   let config = Display.clear config
   ( Paint.Graphics.drawTransformedShadedObject
       canvasPrimitive
-      (Vector3.One)
+      (Vector3.One * 3f)
       Vector3.Zero
-      (Vector3.Zero)
+      (new Vector3(-1f, 0f, 0f))
   )
   // Primitives.drawShadedObject commandPanelPrimitive
   Paint.Graphics.drawShadedLine lineBrushPrimitive

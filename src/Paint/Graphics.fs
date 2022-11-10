@@ -39,14 +39,15 @@ let drawTransformedShadedObject (primitive:ShadedObject) (scale:Vector3) (rotati
   glUseProgram shader
   let mvpUniform = glGetUniformLocationEasy shader "mvp"
   
-  let model = Matrix4x4.CreateTranslation(translation) * Matrix4x4.CreateScale(scale)
-  let view = Matrix4x4.CreateLookAt(
-    new Vector3(0f, 0f, 1f),
-    new Vector3(0f, 0f, 0f),
-    Vector3.UnitY
-  )
-  let projection = Matrix4x4.CreateOrthographic(1.0f, 1.0f, -1.0f, 1.0f)
-  glUniformMatrix4fvEasy mvpUniform 1 (projection * view * model)
+  let forward = -Vector3.UnitZ
+  let up = Vector3.UnitY
+  let worldMatrix = Matrix4x4.CreateWorld(translation, forward, up)
+  let scaleMatrix = Matrix4x4.CreateScale(scale)
+  
+  let model = worldMatrix * scaleMatrix
+  let view = Matrix4x4.Identity
+  let projection = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0.1f, 1.0f)
+  glUniformMatrix4fvEasy mvpUniform 1 model
   glBindVertexArray primitive.VertexData.VAO
   glBindBuffer
     GL_ELEMENT_ARRAY_BUFFER
