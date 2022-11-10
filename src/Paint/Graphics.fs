@@ -15,13 +15,13 @@ let private glGetUniformLocationEasy (program:uint) (name:string) =
 
 let private glUniformMatrix4fvEasy location count (value:Matrix4x4) =
   let buffer = [|
-    value.M11; value.M21; value.M31; value.M41;
-    value.M12; value.M22; value.M32; value.M42;
-    value.M13; value.M23; value.M33; value.M43;
-    value.M14; value.M24; value.M34; value.M44;
+    value.M11; value.M12; value.M13; value.M14;
+    value.M21; value.M22; value.M23; value.M24;
+    value.M31; value.M32; value.M33; value.M34;
+    value.M41; value.M42; value.M43; value.M44;
   |]
   use bufPtr = fixed buffer in
-    glUniformMatrix4fv location count false bufPtr
+    glUniformMatrix4fv location count true bufPtr
 
 let drawShadedLine (primitive:ShadedObject) =
   glUseProgram primitive.Shader
@@ -41,7 +41,7 @@ let drawTransformedShadedObject (primitive:ShadedObject) (scale:Vector3) (rotati
   
   let model = Matrix4x4.CreateTranslation(translation) * Matrix4x4.CreateScale(scale)
   let view = Matrix4x4.CreateLookAt(
-    new Vector3(0f, 0f, -1f),
+    new Vector3(0f, 0f, 1f),
     new Vector3(0f, 0f, 0f),
     Vector3.UnitY
   )
