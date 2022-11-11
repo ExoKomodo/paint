@@ -9,11 +9,11 @@ open Womb.Backends.OpenGL.Api.Constants
 open Womb.Graphics.Primitives
 open Womb.Logging
 
-let private glGetUniformLocationEasy (program:uint) (name:string) =
+let private _glGetUniformLocationEasy (program:uint) (name:string) =
   use namePtr = fixed Encoding.ASCII.GetBytes(name) in
     glGetUniformLocation program namePtr
 
-let private glUniformMatrix4fvEasy location count (value:Matrix4x4) =
+let private _glUniformMatrix4fvEasy location count (value:Matrix4x4) =
   let buffer = [|
     value.M11; value.M12; value.M13; value.M14;
     value.M21; value.M22; value.M23; value.M24;
@@ -22,6 +22,26 @@ let private glUniformMatrix4fvEasy location count (value:Matrix4x4) =
   |]
   use bufPtr = fixed buffer in
     glUniformMatrix4fv location count false bufPtr
+
+let private _useMvpShader shader (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
+  glUseProgram shader
+  let mvpUniform = _glGetUniformLocationEasy shader "mvp"
+
+  let scaleMatrix = Matrix4x4.CreateScale(scale)
+  let rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
+  let translationMatrix = Matrix4x4.CreateTranslation(translation)
+  let modelMatrix = translationMatrix * scaleMatrix
+
+  let cameraPosition = new Vector3(0f, 0f, 1f)
+  let cameraTarget = new Vector3(0f, 0f, 0f)
+  let viewMatrix = Matrix4x4.CreateLookAt(
+    cameraPosition,
+    cameraTarget,
+    Vector3.UnitY
+  )
+  let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
+  let mvp = modelMatrix * viewMatrix
+  _glUniformMatrix4fvEasy mvpUniform 1 mvp
 
 let drawShadedLine (primitive:ShadedObject) =
   glUseProgram primitive.Shader
@@ -34,21 +54,23 @@ let drawShadedLine (primitive:ShadedObject) =
     0
     primitive.Indices.Length
 
+let drawTransformedShadedLine (primitive:ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
+  let shader = primitive.Shader
+  _useMvpShader shader scale rotation translation
+
+  glBindVertexArray primitive.VertexData.VAO
+  glBindBuffer
+    GL_ELEMENT_ARRAY_BUFFER
+    primitive.VertexData.EBO
+  glDrawArrays
+    GL_LINES
+    0
+    primitive.Indices.Length
+
 let drawTransformedShadedObject (primitive:ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
   let shader = primitive.Shader
-  glUseProgram shader
-  let mvpUniform = glGetUniformLocationEasy shader "mvp"
-
-  let scaleMatrix = Matrix4x4.CreateScale(scale)
-  let rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
-  let translationMatrix = Matrix4x4.CreateTranslation(translation)
-  let modelMatrix = translationMatrix * rotationMatrix * scaleMatrix
-
-  debug $"{model}"
-  let view = Matrix4x4.Identity
-  let projection = Matrix4x4.CreateOrthographicOffCenter(0f, 10f, 0f, 10f, 0.1f, 1.0f)
-  let mvp = modelMatrix
-  glUniformMatrix4fvEasy mvpUniform 1 mvp
+  _useMvpShader shader scale rotation translation
+  
   glBindVertexArray primitive.VertexData.VAO
   glBindBuffer
     GL_ELEMENT_ARRAY_BUFFER

@@ -10,8 +10,8 @@ let createUI config =
     match CommandPanel.create with
     | Some(commandPanel) ->
       match LineBrush.create {
-        Start=(LineBrush.pointNew2D 0f 0.5f);
-        End=(LineBrush.pointNew2D 0.5f 0.75f);
+        Start=(LineBrush.pointNew2D 0.0f 0.0f);
+        End=(LineBrush.pointNew2D 0.25f 0.2f);
       } with
       | Some(lineBrush) ->
         (config, Some(canvas), Some(commandPanel), Some(lineBrush))

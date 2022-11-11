@@ -43,14 +43,32 @@ let private initHandler config =
 
 let private drawHandler config =
   let config = Display.clear config
-  ( Paint.Graphics.drawTransformedShadedObject
-      canvasPrimitive
-      (Vector3.One * 1.8f)
-      Vector3.UnitZ
-      (new Vector3(-0.4f, -0.5f, 0f))
-  )
-  // Primitives.drawShadedObject commandPanelPrimitive
-  Paint.Graphics.drawShadedLine lineBrushPrimitive
+  let scale = Vector3.One * 2.0f
+  let rotation = Vector3.UnitZ * 0.0f
+  let translation = new Vector3(0.1f, 0.0f, 0.0f)
+  
+  // Draw canvas
+  Paint.Graphics.drawTransformedShadedObject
+    canvasPrimitive
+    scale
+    rotation
+    translation
+  
+  // Draw objects on canvas
+  let objectOffset = new Vector3(0.0f, 0.0f, 0.0f)
+  Paint.Graphics.drawTransformedShadedLine
+    lineBrushPrimitive
+    scale
+    rotation
+    (translation + objectOffset)
+
+  // Draw UI elements
+  Paint.Graphics.drawTransformedShadedObject
+    commandPanelPrimitive
+    scale
+    rotation
+    (new Vector3(-0.1f, 0.0f, 0.0f))
+
   Display.swap config
 
 [<EntryPoint>]
