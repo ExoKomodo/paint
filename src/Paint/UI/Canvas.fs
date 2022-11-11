@@ -18,11 +18,11 @@ let create =
         // bottom left
         0f; 0.0f; 0.0f;
         // shared top left
-        0f; 0.2f; 0.0f;
+        0f; 0.8f; 0.0f;
         // shared bottom right
-        0.4f; 0.0f; 0.0f;
+        0.5f; 0.0f; 0.0f;
         // top right
-        0.4f; 0.2f; 0.0f;
+        0.5f; 0.8f; 0.0f;
       |]
       [|
         0u; 1u; 2u; // first triangle vertex order as array indices
