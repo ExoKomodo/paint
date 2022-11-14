@@ -1,8 +1,8 @@
 open Argu
 open System
+open System.Numerics
 open Womb
 open Womb.Graphics
-open System.Numerics
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -19,14 +19,14 @@ type CliArguments =
 
 let mutable private canvasPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
-let mutable private lineBrushPrimitive = Primitives.ShadedObject.Default
+let mutable private lineBrushPrimitives: list<Primitives.ShadedObject> = []
 
 let private initHandler config =
   match Paint.Scene.PaintScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
     canvasPrimitive <- canvas
     commandPanelPrimitive <- commandPanel
-    lineBrushPrimitive <- lineBrush
+    lineBrushPrimitives <- [lineBrush]
     newConfig
   | (newConfig, Some(canvas), Some(commandPanel), None) ->
     Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
@@ -43,31 +43,7 @@ let private initHandler config =
 
 let private drawHandler config =
   let config = Display.clear config
-  let scale = Vector3.One * 1.0f
-  let rotation = Vector3.UnitZ * 0.0f
-  let translation = new Vector3(0.5f, 0.5f, 0.0f)
-  
-  // Draw canvas
-  Paint.Graphics.drawTransformedShadedObject
-    canvasPrimitive
-    scale
-    rotation
-    translation
-  
-  // Draw objects on canvas
-  Paint.Graphics.drawTransformedShadedLine
-    lineBrushPrimitive
-    scale
-    rotation
-    (translation + new Vector3(-0.4f, -0.3f, 0.0f))
-
-  // Draw UI elements
-  Paint.Graphics.drawTransformedShadedObject
-    commandPanelPrimitive
-    scale
-    rotation
-    (translation + new Vector3(-0.425f, 0.0f, 0.0f))
-
+  Paint.Scene.PaintScene.draw config canvasPrimitive commandPanelPrimitive lineBrushPrimitives
   Display.swap config
 
 [<EntryPoint>]
