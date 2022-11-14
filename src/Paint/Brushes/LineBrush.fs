@@ -11,7 +11,7 @@ type LineBrushData = {
   End: Point;
 }
 
-let pointNew2D x y = Point(x, y, 1.0f)
+let pointNew2D x y = Point(x, y, 0.0f)
 
 let create (data:LineBrushData) =
   let startX, startY, startZ = data.Start
@@ -20,10 +20,7 @@ let create (data:LineBrushData) =
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
           FragmentShaderPaths = ["Resources/Shaders/Brushes/LineBrush/fragment.glsl"]
-          VertexShaderPaths = [
-            "Resources/Shaders/Lib/map.glsl";
-            "Resources/Shaders/Common/vertex.glsl";
-          ]
+          VertexShaderPaths = ["Resources/Shaders/Common/vertex.glsl"]
       }
       [|
         startX; startY; startZ;

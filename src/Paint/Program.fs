@@ -1,8 +1,8 @@
 open Argu
 open System
+open System.Numerics
 open Womb
 open Womb.Graphics
-open Paint.Graphics
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -19,14 +19,14 @@ type CliArguments =
 
 let mutable private canvasPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
-let mutable private lineBrushPrimitive = Primitives.ShadedObject.Default
+let mutable private lineBrushPrimitives: list<Primitives.ShadedObject> = []
 
 let private initHandler config =
   match Paint.Scene.PaintScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
     canvasPrimitive <- canvas
     commandPanelPrimitive <- commandPanel
-    lineBrushPrimitive <- lineBrush
+    lineBrushPrimitives <- [lineBrush]
     newConfig
   | (newConfig, Some(canvas), Some(commandPanel), None) ->
     Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
@@ -41,11 +41,28 @@ let private initHandler config =
     Logging.fail "Failed to create UI for Paint Scene"
     config
 
+let private calculateMatrices cameraPosition cameraTarget =
+  let viewMatrix = Matrix4x4.CreateLookAt(
+    cameraPosition,
+    cameraTarget,
+    Vector3.UnitY
+  )
+  let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
+  (viewMatrix, projectionMatrix)
+
 let private drawHandler config =
+  let cameraPosition = new Vector3(0f, 0f, 1f)
+  let cameraTarget = new Vector3(0f, 0f, 0f)
+  let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
+
   let config = Display.clear config
-  Primitives.drawShadedObject canvasPrimitive
-  Primitives.drawShadedObject commandPanelPrimitive
-  Paint.Graphics.drawShadedLine lineBrushPrimitive
+  Paint.Scene.PaintScene.draw
+    config
+    viewMatrix
+    projectionMatrix
+    canvasPrimitive
+    commandPanelPrimitive
+    lineBrushPrimitives
   Display.swap config
 
 [<EntryPoint>]

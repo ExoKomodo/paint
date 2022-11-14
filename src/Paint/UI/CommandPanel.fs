@@ -10,20 +10,17 @@ let create =
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
           FragmentShaderPaths = ["Resources/Shaders/UI/CommandPanel/fragment.glsl"]
-          VertexShaderPaths = [
-            "Resources/Shaders/Lib/map.glsl";
-            "Resources/Shaders/Common/vertex.glsl";
-          ]
+          VertexShaderPaths = ["Resources/Shaders/Common/vertex.glsl"]
       }
       [|
         // bottom left
-        0.0f; 0.0f; 0.0f;
+        -0.025f; -0.3f; 0.0f;
         // shared top left
-        0.0f; 1.0f; 0.0f;
+        -0.025f; 0.3f; 0.0f;
         // shared bottom right
-        0.1f; 0.0f; 0.0f;
+        0.025f; -0.3f; 0.0f;
         // top right
-        0.1f; 1.0f; 0.0f;
+        0.025f; 0.3f; 0.0f;
       |]
       [|
         0u; 1u; 2u; // first triangle vertex order as array indices
