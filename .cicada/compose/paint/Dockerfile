@@ -1,1 +1,1 @@
-FROM exokomodo/development:PAINT-2_dotnet7-base-latest
+FROM exokomodo/development:PATCH_fsharp-core-removal-base-latest

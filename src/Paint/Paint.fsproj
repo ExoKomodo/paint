@@ -23,9 +23,6 @@
     <Content Include="Resources\Shaders\*\*\*.glsl" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <PackageReference Include="FSharp.Core" Version="5.0.2">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
     <PackageReference Include="Argu" Version="6.1.1">
       <GeneratePathProperty></GeneratePathProperty>
     </PackageReference>
