@@ -73,11 +73,10 @@ type GameState =
     CommandPanel: Primitives.ShadedObject;
     LineBrushes: list<Primitives.ShadedObject>; }
   
-  static member Default = {
-    Canvas = Primitives.ShadedObject.Default
-    CommandPanel = Primitives.ShadedObject.Default
-    LineBrushes = List.Empty
-  }
+    static member Default = {
+      Canvas = Primitives.ShadedObject.Default
+      CommandPanel = Primitives.ShadedObject.Default
+      LineBrushes = List.Empty }
 
 
 
