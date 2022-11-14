@@ -43,9 +43,9 @@ let private initHandler config =
 
 let private drawHandler config =
   let config = Display.clear config
-  let scale = Vector3.One * 4.0f
+  let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
-  let translation = new Vector3(-0.2f, -0.15f, 0.0f)
+  let translation = new Vector3(0.5f, 0.0f, 0.0f)
   
   // Draw canvas
   Paint.Graphics.drawTransformedShadedObject
@@ -62,7 +62,7 @@ let private drawHandler config =
     translation
 
   // Draw UI elements
-  let objectOffset = new Vector3(-0.025f, 0.0f, 0.0f)
+  let objectOffset = new Vector3(0.0f, 0.0f, 0.0f)
   Paint.Graphics.drawTransformedShadedObject
     commandPanelPrimitive
     scale

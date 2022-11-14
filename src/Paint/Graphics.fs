@@ -40,7 +40,7 @@ let private _useMvpShader shader (scale:Vector3) (rotation:Vector3) (translation
     Vector3.UnitY
   )
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
-  let mvp = modelMatrix * viewMatrix
+  let mvp = modelMatrix * viewMatrix * projectionMatrix
   _glUniformMatrix4fvEasy mvpUniform 1 mvp
 
 let drawShadedLine (primitive:ShadedObject) =

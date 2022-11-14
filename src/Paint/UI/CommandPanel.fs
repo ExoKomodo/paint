@@ -14,11 +14,11 @@ let create =
       }
       [|
         // bottom left
-        0.0f; 0.0f; 0.0f;
+        -0.025f; -0.3f; 0.0f;
         // shared top left
-        0.0f; 0.3f; 0.0f;
+        -0.025f; 0.3f; 0.0f;
         // shared bottom right
-        0.025f; 0.0f; 0.0f;
+        0.025f; -0.3f; 0.0f;
         // top right
         0.025f; 0.3f; 0.0f;
       |]
