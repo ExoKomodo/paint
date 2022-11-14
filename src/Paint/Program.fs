@@ -21,7 +21,8 @@ let mutable private canvasPrimitive = Primitives.ShadedObject.Default
 let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
 let mutable private lineBrushPrimitives: list<Primitives.ShadedObject> = []
 
-let private initHandler config state =
+let private initHandler (configState) =
+  let (config, state) = configState
   match Paint.Scene.PaintScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
     canvasPrimitive <- canvas
@@ -39,7 +40,7 @@ let private initHandler config state =
     (newConfig, state)
   | _ ->
     Logging.fail "Failed to create UI for Paint Scene"
-    (newConfig, state)
+    (config, state)
 
 let private calculateMatrices cameraPosition cameraTarget =
   let viewMatrix = Matrix4x4.CreateLookAt(
@@ -50,7 +51,8 @@ let private calculateMatrices cameraPosition cameraTarget =
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
-let private drawHandler config state =
+let private drawHandler (configState) =
+  let (config, state) = configState
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
@@ -65,6 +67,20 @@ let private drawHandler config state =
     lineBrushPrimitives
   (Display.swap config, state)
 
+type GameState =
+  {
+    Canvas: Primitives.ShadedObject;
+    CommandPanel: Primitives.ShadedObject;
+    LineBrushes: list<Primitives.ShadedObject>; }
+  
+  static member Default = {
+    Canvas = Primitives.ShadedObject.Default
+    CommandPanel = Primitives.ShadedObject.Default
+    LineBrushes = List.Empty
+  }
+
+
+
 [<EntryPoint>]
 let main argv =
   let errorHandler =
@@ -78,9 +94,12 @@ let main argv =
   let width = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
   let height = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
 
-  ( Game.play
+  let (config, _) = (
+    Game.play
       "Paint"
       width
       height
+      GameState.Default
       (Some initHandler)
-      (Some drawHandler) ).ExitCode
+      (Some drawHandler) )
+  config.ExitCode
