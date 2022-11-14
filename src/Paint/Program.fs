@@ -59,14 +59,14 @@ let private drawHandler config =
     lineBrushPrimitive
     scale
     rotation
-    translation
+    (translation + new Vector3(-0.4f, -0.3f, 0.0f))
 
   // Draw UI elements
   Paint.Graphics.drawTransformedShadedObject
     commandPanelPrimitive
     scale
     rotation
-    (translation + new Vector3(0.0f, 0.0f, 0.0f))
+    (translation + new Vector3(-0.425f, 0.0f, 0.0f))
 
   Display.swap config
 
