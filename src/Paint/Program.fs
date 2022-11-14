@@ -78,8 +78,6 @@ type GameState =
       CommandPanel = Primitives.ShadedObject.Default
       LineBrushes = List.Empty }
 
-
-
 [<EntryPoint>]
 let main argv =
   let errorHandler =
