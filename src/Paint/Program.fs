@@ -41,9 +41,28 @@ let private initHandler config =
     Logging.fail "Failed to create UI for Paint Scene"
     config
 
+let private calculateMatrices cameraPosition cameraTarget =
+  let viewMatrix = Matrix4x4.CreateLookAt(
+    cameraPosition,
+    cameraTarget,
+    Vector3.UnitY
+  )
+  let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
+  (viewMatrix, projectionMatrix)
+
 let private drawHandler config =
+  let cameraPosition = new Vector3(0f, 0f, 1f)
+  let cameraTarget = new Vector3(0f, 0f, 0f)
+  let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
+
   let config = Display.clear config
-  Paint.Scene.PaintScene.draw config canvasPrimitive commandPanelPrimitive lineBrushPrimitives
+  Paint.Scene.PaintScene.draw
+    config
+    viewMatrix
+    projectionMatrix
+    canvasPrimitive
+    commandPanelPrimitive
+    lineBrushPrimitives
   Display.swap config
 
 [<EntryPoint>]

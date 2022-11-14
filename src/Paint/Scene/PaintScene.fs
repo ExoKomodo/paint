@@ -14,7 +14,7 @@ let createUI config =
     | Some(commandPanel) ->
       match LineBrush.create {
         Start=(LineBrush.pointNew2D 0.0f 0.0f);
-        End=(LineBrush.pointNew2D 0.25f 0.2f);
+        End=(LineBrush.pointNew2D 0.4f 0.3f);
       } with
       | Some(lineBrush) ->
         (config, Some(canvas), Some(commandPanel), Some(lineBrush))
@@ -28,13 +28,14 @@ let createUI config =
     Logging.fail "Failed to create canvas"
     (config, None, None, None)
 
-let draw config canvas commandPanel lineBrushes =
+let draw config viewMatrix projectionMatrix canvas commandPanel lineBrushes =
   let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
-  let translation = new Vector3(0.5f, 0.5f, 0.0f)
   
   // Draw canvas
   Paint.Graphics.drawTransformedShadedObject
+    viewMatrix
+    projectionMatrix
     canvas
     scale
     rotation
@@ -45,6 +46,8 @@ let draw config canvas commandPanel lineBrushes =
     (
       fun lineBrush ->
         Paint.Graphics.drawTransformedShadedLine
+          viewMatrix
+          projectionMatrix
           lineBrush
           scale
           rotation
@@ -54,6 +57,8 @@ let draw config canvas commandPanel lineBrushes =
 
   // Draw UI elements
   Paint.Graphics.drawTransformedShadedObject
+    viewMatrix
+    projectionMatrix
     commandPanel
     scale
     rotation

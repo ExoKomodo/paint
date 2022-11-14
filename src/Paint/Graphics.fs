@@ -23,7 +23,7 @@ let private _glUniformMatrix4fvEasy location count (value:Matrix4x4) =
   use bufPtr = fixed buffer in
     glUniformMatrix4fv location count false bufPtr
 
-let private _useMvpShader shader (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
+let private _useMvpShader shader (viewMatrix:Matrix4x4) (projectionMatrix:Matrix4x4) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
   glUseProgram shader
   let mvpUniform = _glGetUniformLocationEasy shader "mvp"
 
@@ -32,14 +32,6 @@ let private _useMvpShader shader (scale:Vector3) (rotation:Vector3) (translation
   let translationMatrix = Matrix4x4.CreateTranslation(translation)
   let modelMatrix = scaleMatrix * rotationMatrix * translationMatrix
 
-  let cameraPosition = new Vector3(0f, 0f, 1f)
-  let cameraTarget = new Vector3(0f, 0f, 0f)
-  let viewMatrix = Matrix4x4.CreateLookAt(
-    cameraPosition,
-    cameraTarget,
-    Vector3.UnitY
-  )
-  let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   let mvp = modelMatrix * viewMatrix * projectionMatrix
   _glUniformMatrix4fvEasy mvpUniform 1 mvp
 
@@ -54,9 +46,9 @@ let drawShadedLine (primitive:ShadedObject) =
     0
     primitive.Indices.Length
 
-let drawTransformedShadedLine (primitive:ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
+let drawTransformedShadedLine (viewMatrix:Matrix4x4) (projectionMatrix:Matrix4x4) (primitive:ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
   let shader = primitive.Shader
-  _useMvpShader shader scale rotation translation
+  _useMvpShader shader viewMatrix projectionMatrix scale rotation translation
 
   glBindVertexArray primitive.VertexData.VAO
   glBindBuffer
@@ -67,9 +59,9 @@ let drawTransformedShadedLine (primitive:ShadedObject) (scale:Vector3) (rotation
     0
     primitive.Indices.Length
 
-let drawTransformedShadedObject (primitive:ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
+let drawTransformedShadedObject (viewMatrix:Matrix4x4) (projectionMatrix:Matrix4x4) (primitive:ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) =
   let shader = primitive.Shader
-  _useMvpShader shader scale rotation translation
+  _useMvpShader shader viewMatrix projectionMatrix scale rotation translation
   
   glBindVertexArray primitive.VertexData.VAO
   glBindBuffer
