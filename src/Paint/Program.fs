@@ -17,26 +17,30 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let mutable private canvasPrimitive = Primitives.ShadedObject.Default
-let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
-let mutable private lineBrushPrimitives: list<Primitives.ShadedObject> = []
+type GameState =
+  { Canvas: Primitives.ShadedObject;
+    CommandPanel: Primitives.ShadedObject;
+    LineBrushes: list<Primitives.ShadedObject>; }
+  
+    static member Default = {
+      Canvas = Primitives.ShadedObject.Default
+      CommandPanel = Primitives.ShadedObject.Default
+      LineBrushes = List.Empty }
 
 let private initHandler (configState) =
   let (config, state) = configState
   match Paint.Scene.PaintScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
-    canvasPrimitive <- canvas
-    commandPanelPrimitive <- commandPanel
-    lineBrushPrimitives <- [lineBrush]
-    (newConfig, state)
+    ( newConfig,
+      { GameState.Default with
+          Canvas = canvas
+          CommandPanel = commandPanel
+          LineBrushes = [lineBrush] })
   | (newConfig, Some(canvas), Some(commandPanel), None) ->
     Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
-    canvasPrimitive <- canvas
-    commandPanelPrimitive <- commandPanel
     (newConfig, state)
   | (newConfig, Some(canvas), None, None) ->
     Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Paint Scene"
-    canvasPrimitive <- canvas
     (newConfig, state)
   | _ ->
     Logging.fail "Failed to create UI for Paint Scene"
@@ -62,20 +66,10 @@ let private drawHandler (configState) =
     config
     viewMatrix
     projectionMatrix
-    canvasPrimitive
-    commandPanelPrimitive
-    lineBrushPrimitives
+    state.Canvas
+    state.CommandPanel
+    state.LineBrushes
   (Display.swap config, state)
-
-type GameState =
-  { Canvas: Primitives.ShadedObject;
-    CommandPanel: Primitives.ShadedObject;
-    LineBrushes: list<Primitives.ShadedObject>; }
-  
-    static member Default = {
-      Canvas = Primitives.ShadedObject.Default
-      CommandPanel = Primitives.ShadedObject.Default
-      LineBrushes = List.Empty }
 
 [<EntryPoint>]
 let main argv =
