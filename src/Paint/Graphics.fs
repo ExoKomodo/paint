@@ -30,7 +30,7 @@ let private _useMvpShader shader (scale:Vector3) (rotation:Vector3) (translation
   let scaleMatrix = Matrix4x4.CreateScale(scale)
   let rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
   let translationMatrix = Matrix4x4.CreateTranslation(translation)
-  let modelMatrix = translationMatrix * scaleMatrix
+  let modelMatrix = translationMatrix * rotationMatrix * scaleMatrix
 
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
