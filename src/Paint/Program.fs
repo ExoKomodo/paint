@@ -68,8 +68,7 @@ let private drawHandler (configState) =
   (Display.swap config, state)
 
 type GameState =
-  {
-    Canvas: Primitives.ShadedObject;
+  { Canvas: Primitives.ShadedObject;
     CommandPanel: Primitives.ShadedObject;
     LineBrushes: list<Primitives.ShadedObject>; }
   
