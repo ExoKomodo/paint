@@ -1,4 +1,5 @@
 open Argu
+open Paint.State
 open System
 open System.Numerics
 open Womb
@@ -17,19 +18,9 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-type GameState =
-  { Canvas: Primitives.ShadedObject;
-    CommandPanel: Primitives.ShadedObject;
-    LineBrushes: list<Primitives.ShadedObject>; }
-  
-    static member Default = {
-      Canvas = Primitives.ShadedObject.Default
-      CommandPanel = Primitives.ShadedObject.Default
-      LineBrushes = List.Empty }
-
 let private initHandler (configState) =
   let (config, state) = configState
-  match Paint.Scene.PaintScene.createUI config with
+  match Paint.Scene.DrawScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
     ( newConfig,
       { GameState.Default with
@@ -62,13 +53,10 @@ let private drawHandler (configState) =
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
   let config = Display.clear config
-  Paint.Scene.PaintScene.draw
-    config
+  Paint.Scene.DrawScene.draw
+    configState
     viewMatrix
     projectionMatrix
-    state.Canvas
-    state.CommandPanel
-    state.LineBrushes
   (Display.swap config, state)
 
 [<EntryPoint>]
