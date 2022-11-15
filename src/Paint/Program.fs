@@ -69,14 +69,14 @@ let main argv =
   let parsedArgs =
     ArgumentParser.Create<CliArguments>(programName="Paint", errorHandler=errorHandler).Parse argv
 
-  let width = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
-  let height = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
+  let width : uint = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
+  let height : uint = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
 
   let (config, _) = (
     Game.play
       "Paint"
-      (uint width)
-      (uint height)
+      width
+      height
       GameState.Default
       (Some initHandler)
       (Some drawHandler) )
