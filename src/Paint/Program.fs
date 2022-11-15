@@ -18,7 +18,7 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let private initHandler (configState) =
+let private initHandler (configState:Engine.Internals.Config * GameState) =
   let (config, state) = configState
   match Paint.Scene.DrawScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
@@ -46,18 +46,18 @@ let private calculateMatrices cameraPosition cameraTarget =
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
-let private drawHandler (configState) =
+let private drawHandler (configState:Display.Config * GameState) =
   let (config, state) = configState
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
-  let config = Display.clear config
+  let clearedConfig = Display.clear config
   Paint.Scene.DrawScene.draw
-    configState
+    (clearedConfig, state)
     viewMatrix
     projectionMatrix
-  (Display.swap config, state)
+  (Display.swap clearedConfig, state)
 
 [<EntryPoint>]
 let main argv =
