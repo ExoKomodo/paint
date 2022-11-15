@@ -1,1 +1,1 @@
-FROM exokomodo/development:PAINT-13-add-state-base-9
+FROM exokomodo/development:PAINT-13-base-latest
