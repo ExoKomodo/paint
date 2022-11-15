@@ -1,1 +1,1 @@
-FROM exokomodo/development:PATCH_fsharp-core-removal-base-latest
+FROM exokomodo/development:PAINT-13-base-latest

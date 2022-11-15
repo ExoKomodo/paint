@@ -1,4 +1,5 @@
 open Argu
+open Paint.State
 open System
 open System.Numerics
 open Womb
@@ -17,29 +18,24 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let mutable private canvasPrimitive = Primitives.ShadedObject.Default
-let mutable private commandPanelPrimitive = Primitives.ShadedObject.Default
-let mutable private lineBrushPrimitives: list<Primitives.ShadedObject> = []
-
-let private initHandler config =
-  match Paint.Scene.PaintScene.createUI config with
+let private initHandler (configState:Engine.Internals.Config * GameState) =
+  let (config, state) = configState
+  match Paint.Scene.DrawScene.createUI config with
   | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
-    canvasPrimitive <- canvas
-    commandPanelPrimitive <- commandPanel
-    lineBrushPrimitives <- [lineBrush]
-    newConfig
+    ( newConfig,
+      { GameState.Default with
+          Canvas = canvas
+          CommandPanel = commandPanel
+          LineBrushes = [lineBrush] })
   | (newConfig, Some(canvas), Some(commandPanel), None) ->
     Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
-    canvasPrimitive <- canvas
-    commandPanelPrimitive <- commandPanel
-    newConfig
+    (newConfig, state)
   | (newConfig, Some(canvas), None, None) ->
     Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Paint Scene"
-    canvasPrimitive <- canvas
-    newConfig
+    (newConfig, state)
   | _ ->
     Logging.fail "Failed to create UI for Paint Scene"
-    config
+    (config, state)
 
 let private calculateMatrices cameraPosition cameraTarget =
   let viewMatrix = Matrix4x4.CreateLookAt(
@@ -50,20 +46,18 @@ let private calculateMatrices cameraPosition cameraTarget =
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
-let private drawHandler config =
+let private drawHandler (configState:Display.Config * GameState) =
+  let (config, state) = configState
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
-  let config = Display.clear config
-  Paint.Scene.PaintScene.draw
-    config
+  let clearedConfig = Display.clear config
+  Paint.Scene.DrawScene.draw
+    (clearedConfig, state)
     viewMatrix
     projectionMatrix
-    canvasPrimitive
-    commandPanelPrimitive
-    lineBrushPrimitives
-  Display.swap config
+  (Display.swap clearedConfig, state)
 
 [<EntryPoint>]
 let main argv =
@@ -78,9 +72,12 @@ let main argv =
   let width = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
   let height = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
 
-  ( Game.play
+  let (config, _) = (
+    Game.play
       "Paint"
       width
       height
+      GameState.Default
       (Some initHandler)
-      (Some drawHandler) ).ExitCode
+      (Some drawHandler) )
+  config.ExitCode
