@@ -75,8 +75,8 @@ let main argv =
   let (config, _) = (
     Game.play<GameState>
       "Paint"
-      width
-      height
+      (uint width)
+      (uint height)
       GameState.Default
       (Some initHandler)
       (Some drawHandler) )
