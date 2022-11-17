@@ -35,7 +35,7 @@ let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
   let rotation = Vector3.UnitZ * 0.0f
   
   // Draw canvas
-  Graphics.drawTransformedShadedObject
+  Primitives.drawShadedObjectWithMvp
     viewMatrix
     projectionMatrix
     state.Canvas
@@ -47,7 +47,7 @@ let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
   List.map
     (
       fun lineBrush ->
-        Graphics.drawTransformedShadedLine
+        Primitives.drawShadedLineWithMvp
           viewMatrix
           projectionMatrix
           lineBrush
@@ -58,7 +58,7 @@ let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
     state.LineBrushes |> ignore
 
   // Draw UI elements
-  Graphics.drawTransformedShadedObject
+  Primitives.drawShadedObjectWithMvp
     viewMatrix
     projectionMatrix
     state.CommandPanel
