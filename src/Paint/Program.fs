@@ -72,6 +72,9 @@ let main argv =
   let width = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
   let height = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
 
+  let a = Game.play "Paint"
+  let b = a width height GameState.Default
+
   let (config, _) = (
     Game.play
       "Paint"
