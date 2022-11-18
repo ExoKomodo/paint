@@ -25,7 +25,9 @@ let private handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Confi
     { config with
         State =
           { config.State with
-              IsDebug = not config.State.IsDebug }}
+              DebugScene =
+                { config.State.DebugScene with
+                    IsEnabled = not config.State.DebugScene.IsEnabled } } }
   | _ -> config
 
 let private initHandler (config:Config<GameState>) =
@@ -34,9 +36,11 @@ let private initHandler (config:Config<GameState>) =
     { config with
         State =
           { GameState.Default with
-              Canvas = canvas
-              CommandPanel = commandPanel
-              LineBrushes = [lineBrush] } }
+              DrawScene =
+                { DrawSceneState.Default with
+                    Canvas = canvas
+                    CommandPanel = commandPanel
+                    LineBrushes = [lineBrush] } } }
   | (config, Some(canvas), Some(commandPanel), None) ->
     Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
     config
@@ -57,7 +61,6 @@ let private calculateMatrices cameraPosition cameraTarget =
   (viewMatrix, projectionMatrix)
 
 let private drawHandler (config:Config<GameState>) =
-  Logging.debug_if config.State.IsDebug $"Mouse {config.Mouse}"
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
@@ -67,6 +70,10 @@ let private drawHandler (config:Config<GameState>) =
     config
     viewMatrix
     projectionMatrix
+
+  if config.State.DebugScene.IsEnabled then
+    Logging.debug_if config.State.DebugScene.IsEnabled $"Mouse {config.Mouse}"
+
   { config with
       DisplayConfig = Engine.Internals.drawEnd displayConfig }
 

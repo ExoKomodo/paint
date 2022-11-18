@@ -36,13 +36,16 @@
     
     <!-- Library code -->
     <Compile Include="Lib/Graphics.fs" />
-    <!-- Common types -->
-    <Compile Include="State/GameState.fs" />
+    <!-- State -->
+    <Compile Include="State/Types.fs" />
+    <!-- Debug -->
+    <Compile Include="Debug/Mouse.fs" />
     <!-- Rendered objects -->
     <Compile Include="Brushes/LineBrush.fs" />
     <Compile Include="UI/Canvas.fs" />
     <Compile Include="UI/CommandPanel.fs" />
     <!-- Game scenes -->
+    <Compile Include="Scene/DebugScene.fs" />
     <Compile Include="Scene/DrawScene.fs" />
     <!-- Main -->
     <Compile Include="Program.fs" />

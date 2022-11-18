@@ -1,7 +1,6 @@
-module Paint.Scene.DrawScene
+module Paint.Scene.DebugScene
 
 open Paint.Brushes
-open Paint.Lib
 open Paint.State
 open Paint.UI
 open System.Numerics
@@ -9,7 +8,7 @@ open Womb
 open Womb.Graphics
 open Womb.Logging
 
-let createUI config =
+let createDebugUI config =
   match Canvas.create with
   | Some(canvas) ->
     match CommandPanel.create with
@@ -39,30 +38,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   Primitives.drawShadedObjectWithMvp
     viewMatrix
     projectionMatrix
-    state.DrawScene.Canvas
+    state.DebugScene.Mouse
     scale
     rotation
-    (new Vector3(0.5f, 0.5f, 0.0f))
-  
-  // Draw objects on canvas
-  List.map
-    (
-      fun lineBrush ->
-        Primitives.drawShadedLineWithMvp
-          viewMatrix
-          projectionMatrix
-          lineBrush
-          scale
-          rotation
-          (new Vector3(0.1f, 0.2f, 0.0f))
-    )
-    state.DrawScene.LineBrushes |> ignore
-
-  // Draw UI elements
-  Primitives.drawShadedObjectWithMvp
-    viewMatrix
-    projectionMatrix
-    state.DrawScene.CommandPanel
-    scale
-    rotation
-    (new Vector3(0.075f, 0.5f, 0.0f))
+    (new Vector3(config.Mouse.Position.X, config.Mouse.Position.Y, 0.0f))
