@@ -4,8 +4,6 @@ open SDL2Bindings
 open System
 open System.Numerics
 open Womb
-open Womb.Graphics
-open Womb.Input
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -59,7 +57,7 @@ let private calculateMatrices cameraPosition cameraTarget =
   (viewMatrix, projectionMatrix)
 
 let private drawHandler (config:Config<GameState>) =
-  Logging.debug_if config.State.IsDebug $"Config {config}"
+  Logging.debug_if config.State.IsDebug $"Mouse {config.Mouse}"
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
