@@ -1,1 +1,1 @@
-FROM exokomodo/development:PAINT-13-base-latest
+FROM exokomodo/development:PAINT-18_debug-mode-base-latest
