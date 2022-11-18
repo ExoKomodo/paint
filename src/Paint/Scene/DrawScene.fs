@@ -5,6 +5,7 @@ open Paint.Lib
 open Paint.State
 open Paint.UI
 open System.Numerics
+open Womb
 open Womb.Graphics
 open Womb.Logging
 
@@ -29,8 +30,8 @@ let createUI config =
     fail "Failed to create canvas"
     (config, None, None, None)
 
-let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
-  let (config, state) = configState
+let draw (config:Config<GameState>) viewMatrix projectionMatrix =
+  let state = config.State
   let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
   
