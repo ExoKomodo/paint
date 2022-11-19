@@ -8,6 +8,7 @@ open System.Numerics
 open Womb
 open Womb.Graphics
 open Womb.Logging
+open Womb.Types
 
 let createUI config =
   match Canvas.create with
@@ -37,6 +38,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   
   // Draw canvas
   Primitives.drawShadedObjectWithMvp
+    config
     viewMatrix
     projectionMatrix
     state.DrawScene.Canvas
@@ -49,6 +51,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     (
       fun lineBrush ->
         Primitives.drawShadedLineWithMvp
+          config
           viewMatrix
           projectionMatrix
           lineBrush
@@ -60,6 +63,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
 
   // Draw UI elements
   Primitives.drawShadedObjectWithMvp
+    config
     viewMatrix
     projectionMatrix
     state.DrawScene.CommandPanel

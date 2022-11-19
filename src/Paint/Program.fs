@@ -4,6 +4,7 @@ open SDL2Bindings
 open System
 open System.Numerics
 open Womb
+open Womb.Types
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -66,7 +67,7 @@ let private initDrawScene (config:Config<GameState>) =
 
 let private initHandler (config:Config<GameState>) =
   initDebugScene config
-    // |> initDrawScene
+    |> initDrawScene
 
 let private calculateMatrices cameraPosition cameraTarget =
   let viewMatrix = Matrix4x4.CreateLookAt(
@@ -83,17 +84,16 @@ let private drawHandler (config:Config<GameState>) =
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
   let displayConfig = Engine.Internals.drawBegin config.DisplayConfig
-  // Paint.Scene.DrawScene.draw
-  //   config
-  //   viewMatrix
-  //   projectionMatrix
-
-  Paint.Scene.DebugScene.draw
+  Paint.Scene.DrawScene.draw
     config
     viewMatrix
     projectionMatrix
+
   if config.State.DebugScene.IsEnabled then
-    Logging.debug_if config.State.DebugScene.IsEnabled $"Mouse {config.Mouse}"
+    Paint.Scene.DebugScene.draw
+      config
+      viewMatrix
+      projectionMatrix
 
   { config with
       DisplayConfig = Engine.Internals.drawEnd displayConfig }

@@ -8,6 +8,7 @@ open System.Numerics
 open Womb
 open Womb.Graphics
 open Womb.Logging
+open Womb.Types
 
 let createUI config =
   match Mouse.create with
@@ -24,6 +25,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   
   // Draw mouse
   Primitives.drawShadedObjectWithMvp
+    config
     viewMatrix
     projectionMatrix
     state.DebugScene.Mouse
