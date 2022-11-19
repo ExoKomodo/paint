@@ -1,6 +1,7 @@
 module Paint.Scene.DebugScene
 
 open Paint.Brushes
+open Paint.Debug
 open Paint.State
 open Paint.UI
 open System.Numerics
@@ -8,37 +9,24 @@ open Womb
 open Womb.Graphics
 open Womb.Logging
 
-let createDebugUI config =
-  match Canvas.create with
-  | Some(canvas) ->
-    match CommandPanel.create with
-    | Some(commandPanel) ->
-      match LineBrush.create {
-        Start=(LineBrush.pointNew2D 0.0f 0.0f);
-        End=(LineBrush.pointNew2D 0.4f 0.3f);
-      } with
-      | Some(lineBrush) ->
-        (config, Some(canvas), Some(commandPanel), Some(lineBrush))
-      | None ->
-        fail "Failed to create line brush"
-        (config, Some(canvas), Some(commandPanel), None)
-    | None ->
-      fail "Failed to create command panel"
-      (config, Some(canvas), None, None)
+let createUI config =
+  match Mouse.create with
+  | Some(mouse) ->
+      (config, Some(mouse))
   | None ->
-    fail "Failed to create canvas"
-    (config, None, None, None)
+    fail "Failed to create mouse"
+    (config, None)
 
 let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   let state = config.State
   let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
   
-  // Draw canvas
+  // Draw mouse
   Primitives.drawShadedObjectWithMvp
     viewMatrix
     projectionMatrix
     state.DebugScene.Mouse
     scale
     rotation
-    (new Vector3(config.Mouse.Position.X, config.Mouse.Position.Y, 0.0f))
+    Vector3.Zero

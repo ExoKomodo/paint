@@ -30,26 +30,43 @@ let private handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Confi
                     IsEnabled = not config.State.DebugScene.IsEnabled } } }
   | _ -> config
 
-let private initHandler (config:Config<GameState>) =
+let private initDebugScene (config:Config<GameState>) =
+  match Paint.Scene.DebugScene.createUI config with
+  | (config, Some(mouse)) ->
+    { config with
+        State =
+          { config.State with
+              DebugScene =
+                { config.State.DebugScene with
+                    Mouse = mouse } } }
+  | _ ->
+    Logging.fail "Failed to create UI for Debug Scene"
+    config
+
+let private initDrawScene (config:Config<GameState>) =
   match Paint.Scene.DrawScene.createUI config with
   | (config, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
     { config with
         State =
-          { GameState.Default with
+          { config.State with
               DrawScene =
-                { DrawSceneState.Default with
+                { config.State.DrawScene with
                     Canvas = canvas
                     CommandPanel = commandPanel
                     LineBrushes = [lineBrush] } } }
   | (config, Some(canvas), Some(commandPanel), None) ->
-    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
+    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Draw Scene"
     config
   | (config, Some(canvas), None, None) ->
-    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Paint Scene"
+    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Draw Scene"
     config
   | _ ->
-    Logging.fail "Failed to create UI for Paint Scene"
+    Logging.fail "Failed to create UI for Draw Scene"
     config
+
+let private initHandler (config:Config<GameState>) =
+  initDebugScene config
+    // |> initDrawScene
 
 let private calculateMatrices cameraPosition cameraTarget =
   let viewMatrix = Matrix4x4.CreateLookAt(
@@ -66,11 +83,15 @@ let private drawHandler (config:Config<GameState>) =
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
   let displayConfig = Engine.Internals.drawBegin config.DisplayConfig
-  Paint.Scene.DrawScene.draw
+  // Paint.Scene.DrawScene.draw
+  //   config
+  //   viewMatrix
+  //   projectionMatrix
+
+  Paint.Scene.DebugScene.draw
     config
     viewMatrix
     projectionMatrix
-
   if config.State.DebugScene.IsEnabled then
     Logging.debug_if config.State.DebugScene.IsEnabled $"Mouse {config.Mouse}"
 
