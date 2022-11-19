@@ -5,8 +5,10 @@ open Paint.Lib
 open Paint.State
 open Paint.UI
 open System.Numerics
+open Womb
 open Womb.Graphics
 open Womb.Logging
+open Womb.Types
 
 let createUI config =
   match Canvas.create with
@@ -29,16 +31,17 @@ let createUI config =
     fail "Failed to create canvas"
     (config, None, None, None)
 
-let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
-  let (config, state) = configState
+let draw (config:Config<GameState>) viewMatrix projectionMatrix =
+  let state = config.State
   let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
   
   // Draw canvas
   Primitives.drawShadedObjectWithMvp
+    config
     viewMatrix
     projectionMatrix
-    state.Canvas
+    state.DrawScene.Canvas
     scale
     rotation
     (new Vector3(0.5f, 0.5f, 0.0f))
@@ -48,6 +51,7 @@ let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
     (
       fun lineBrush ->
         Primitives.drawShadedLineWithMvp
+          config
           viewMatrix
           projectionMatrix
           lineBrush
@@ -55,13 +59,14 @@ let draw (configState:Display.Config * GameState) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.1f, 0.2f, 0.0f))
     )
-    state.LineBrushes |> ignore
+    state.DrawScene.LineBrushes |> ignore
 
   // Draw UI elements
   Primitives.drawShadedObjectWithMvp
+    config
     viewMatrix
     projectionMatrix
-    state.CommandPanel
+    state.DrawScene.CommandPanel
     scale
     rotation
     (new Vector3(0.075f, 0.5f, 0.0f))

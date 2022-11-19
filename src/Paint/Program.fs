@@ -1,9 +1,10 @@
 open Argu
 open Paint.State
+open SDL2Bindings
 open System
 open System.Numerics
 open Womb
-open Womb.Graphics
+open Womb.Types
 
 let DEFAULT_WIDTH = 800u
 let DEFAULT_HEIGHT = 600u
@@ -18,24 +19,55 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let private initHandler (configState:Engine.Internals.Config * GameState) =
-  let (config, state) = configState
-  match Paint.Scene.DrawScene.createUI config with
-  | (newConfig, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
-    ( newConfig,
-      { GameState.Default with
-          Canvas = canvas
-          CommandPanel = commandPanel
-          LineBrushes = [lineBrush] })
-  | (newConfig, Some(canvas), Some(commandPanel), None) ->
-    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Paint Scene"
-    (newConfig, state)
-  | (newConfig, Some(canvas), None, None) ->
-    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Paint Scene"
-    (newConfig, state)
+let private handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Config<GameState> =
+  match event.key.keysym.sym with
+  | SDL.SDL_Keycode.SDLK_ESCAPE -> config.StopHandler config
+  | SDL.SDL_Keycode.SDLK_F12 ->
+    { config with
+        State =
+          { config.State with
+              DebugScene =
+                { config.State.DebugScene with
+                    IsEnabled = not config.State.DebugScene.IsEnabled } } }
+  | _ -> config
+
+let private initDebugScene (config:Config<GameState>) =
+  match Paint.Scene.DebugScene.createUI config with
+  | (config, Some(mouse)) ->
+    { config with
+        State =
+          { config.State with
+              DebugScene =
+                { config.State.DebugScene with
+                    Mouse = mouse } } }
   | _ ->
-    Logging.fail "Failed to create UI for Paint Scene"
-    (config, state)
+    Logging.fail "Failed to create UI for Debug Scene"
+    config
+
+let private initDrawScene (config:Config<GameState>) =
+  match Paint.Scene.DrawScene.createUI config with
+  | (config, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
+    { config with
+        State =
+          { config.State with
+              DrawScene =
+                { config.State.DrawScene with
+                    Canvas = canvas
+                    CommandPanel = commandPanel
+                    LineBrushes = [lineBrush] } } }
+  | (config, Some(canvas), Some(commandPanel), None) ->
+    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Draw Scene"
+    config
+  | (config, Some(canvas), None, None) ->
+    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Draw Scene"
+    config
+  | _ ->
+    Logging.fail "Failed to create UI for Draw Scene"
+    config
+
+let private initHandler (config:Config<GameState>) =
+  initDebugScene config
+    |> initDrawScene
 
 let private calculateMatrices cameraPosition cameraTarget =
   let viewMatrix = Matrix4x4.CreateLookAt(
@@ -46,18 +78,25 @@ let private calculateMatrices cameraPosition cameraTarget =
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
-let private drawHandler (configState:Display.Config * GameState) =
-  let (config, state) = configState
+let private drawHandler (config:Config<GameState>) =
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
-  let clearedConfig = Display.clear config
+  let displayConfig = Engine.Internals.drawBegin config.DisplayConfig
   Paint.Scene.DrawScene.draw
-    (clearedConfig, state)
+    config
     viewMatrix
     projectionMatrix
-  (Display.swap clearedConfig, state)
+
+  if config.State.DebugScene.IsEnabled then
+    Paint.Scene.DebugScene.draw
+      config
+      viewMatrix
+      projectionMatrix
+
+  { config with
+      DisplayConfig = Engine.Internals.drawEnd displayConfig }
 
 [<EntryPoint>]
 let main argv =
@@ -72,15 +111,11 @@ let main argv =
   let width = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
   let height = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
 
-  let a = Game.play "Paint"
-  let b = a width height GameState.Default
-
-  let (config, _) = (
-    Game.play
+  ( Game.play
       "Paint"
       width
       height
       GameState.Default
       (Some initHandler)
-      (Some drawHandler) )
-  config.ExitCode
+      (Some handleKeyUp)
+      (Some drawHandler) ).ExitCode
