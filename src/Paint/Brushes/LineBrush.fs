@@ -6,14 +6,14 @@ open Womb.Graphics
 
 type Point = single * single * single
 
-type LineBrushData = {
+type Data = {
   Start: Point;
   End: Point;
 }
 
 let pointNew2D x y = Point(x, y, 0.0f)
 
-let create (data:LineBrushData) =
+let create (data:Data) =
   let startX, startY, startZ = data.Start
   let endX, endY, endZ = data.End
   let lineBrush = (
@@ -23,11 +23,18 @@ let create (data:LineBrushData) =
           VertexShaderPaths = ["Resources/Shaders/Common/vertex.glsl"]
       }
       [|
-        startX; startY; startZ;
-        endX; endY; endZ;
+        // bottom left
+        -0.4f; -0.3f; 0.0f;
+        // shared top left
+        -0.4f; 0.3f; 0.0f;
+        // shared bottom right
+        0.4f; -0.3f; 0.0f;
+        // top right
+        0.4f; 0.3f; 0.0f;
       |]
       [|
-        0u; 1u;
+        0u; 1u; 2u; // first triangle vertex order as array indices
+        1u; 2u; 3u; // second triangle vertex order as array indices
       |]
   )
 
