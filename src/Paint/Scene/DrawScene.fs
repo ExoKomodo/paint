@@ -47,16 +47,21 @@ let private drawShadedLine (config:Config<GameState>) viewMatrix projectionMatri
     (glGetUniformLocationEasy shader "mvp")
     1
     mvp
+  
+  glUniform2f
+    (glGetUniformLocationEasy shader "mouse")
+    config.Mouse.Position.X
+    config.Mouse.Position.Y
 
-  let (x, y, z) = line.Start
-  glUniform3f
-    (glGetUniformLocationEasy shader "start")
-    x y z
+  // let (x, y, z) = line.Start
+  // glUniform3f
+  //   (glGetUniformLocationEasy shader "start")
+  //   x y z
 
-  let (x, y, z) = line.End
-  glUniform3f
-    (glGetUniformLocationEasy shader "end")
-    x y z
+  // let (x, y, z) = line.End
+  // glUniform3f
+  //   (glGetUniformLocationEasy shader "end")
+  //   x y z
   
   glBindVertexArray primitive.VertexData.VAO
   glBindBuffer
