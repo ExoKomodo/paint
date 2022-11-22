@@ -117,6 +117,7 @@ let private drawHandler (config:Config<GameState>) =
       config
       viewMatrix
       projectionMatrix
+      []
 
   { config with
       DisplayConfig = Engine.Internals.drawEnd displayConfig }

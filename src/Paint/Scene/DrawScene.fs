@@ -30,46 +30,6 @@ let createUI config =
     fail "Failed to create canvas"
     (config, None, None, None)
 
-let private drawShadedLine (config:Config<GameState>) viewMatrix projectionMatrix (primitive:Primitives.ShadedObject) (scale:Vector3) (rotation:Vector3) (translation:Vector3) (line:LineBrush.Data) =
-  let shader = primitive.Shader
-  glUseProgram shader
-
-  let scaleMatrix = Matrix4x4.CreateScale(scale)
-  let rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
-  let translationMatrix = Matrix4x4.CreateTranslation(translation)
-  let modelMatrix = scaleMatrix * rotationMatrix * translationMatrix
-
-  let mvp = modelMatrix * viewMatrix * projectionMatrix
-  glUniformMatrix4fvEasy
-    (glGetUniformLocationEasy shader "mvp")
-    1
-    mvp
-  
-  glUniform2f
-    (glGetUniformLocationEasy shader "mouse")
-    config.Mouse.Position.X
-    config.Mouse.Position.Y
-
-  // let (x, y, z) = line.Start
-  // glUniform3f
-  //   (glGetUniformLocationEasy shader "start")
-  //   x y z
-
-  // let (x, y, z) = line.End
-  // glUniform3f
-  //   (glGetUniformLocationEasy shader "end")
-  //   x y z
-  
-  glBindVertexArray primitive.VertexData.VAO
-  glBindBuffer
-    GL_ELEMENT_ARRAY_BUFFER
-    primitive.VertexData.EBO
-  glDrawElements
-    GL_TRIANGLES
-    primitive.Indices.Length
-    GL_UNSIGNED_INT
-    GL_NULL
-
 let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   let state = config.State
   let scale = Vector3.One * 1.0f
@@ -84,12 +44,13 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     scale
     rotation
     (new Vector3(0.5f, 0.5f, 0.0f))
+    []
   
   // Draw objects on canvas
   List.map
     (
       fun lineBrush ->
-        drawShadedLine
+        Primitives.drawShadedObjectWithMvp
           config
           viewMatrix
           projectionMatrix
@@ -97,9 +58,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           scale
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
-          { Start = (LineBrush.pointNew2D 0.0f 0.0f)
-            End = Some(LineBrush.pointNew2D 0.4f 0.3f) }
-
+          []
     )
     state.DrawScene.LineBrushes |> ignore
 
@@ -112,3 +71,4 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     scale
     rotation
     (new Vector3(0.075f, 0.5f, 0.0f))
+    []
