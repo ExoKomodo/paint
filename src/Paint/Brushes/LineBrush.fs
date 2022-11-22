@@ -8,14 +8,12 @@ type Point = single * single * single
 
 type Data = {
   Start: Point;
-  End: Point;
+  End: option<Point>;
 }
 
 let pointNew2D x y = Point(x, y, 0.0f)
 
-let create (data:Data) =
-  let startX, startY, startZ = data.Start
-  let endX, endY, endZ = data.End
+let create () =
   let lineBrush = (
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with

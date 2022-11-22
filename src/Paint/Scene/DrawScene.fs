@@ -17,10 +17,7 @@ let createUI config =
   | Some(canvas) ->
     match CommandPanel.create with
     | Some(commandPanel) ->
-      match LineBrush.create {
-        Start=(LineBrush.pointNew2D 0.0f 0.0f);
-        End=(LineBrush.pointNew2D 0.4f 0.3f);
-      } with
+      match LineBrush.create() with
       | Some(lineBrush) ->
         (config, Some(canvas), Some(commandPanel), Some(lineBrush))
       | None ->
@@ -101,7 +98,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           { Start = (LineBrush.pointNew2D 0.0f 0.0f)
-            End = (LineBrush.pointNew2D 0.4f 0.3f) }
+            End = Some(LineBrush.pointNew2D 0.4f 0.3f) }
 
     )
     state.DrawScene.LineBrushes |> ignore
