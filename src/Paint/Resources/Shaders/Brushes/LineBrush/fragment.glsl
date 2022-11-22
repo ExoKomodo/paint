@@ -9,8 +9,6 @@ uniform vec2 mouse;
 
 vec4 drawCircle(vec2 center, float radius, vec4 color);
 vec4 drawLine(vec2 start, vec2 end, float thickness, vec4 color);
-bool isZero(vec2 x);
-bool isZero(vec3 x);
 bool isZero(vec4 x);
 
 void main()
