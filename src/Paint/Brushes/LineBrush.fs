@@ -19,7 +19,10 @@ let create (data:Data) =
   let lineBrush = (
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPaths = ["Resources/Shaders/Brushes/LineBrush/fragment.glsl"]
+          FragmentShaderPaths = [
+            "Resources/Shaders/Lib/helpers.glsl";
+            "Resources/Shaders/Brushes/LineBrush/fragment.glsl";
+          ]
           VertexShaderPaths = ["Resources/Shaders/Common/vertex.glsl"]
       }
       [|

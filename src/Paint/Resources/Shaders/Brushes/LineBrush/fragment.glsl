@@ -1,46 +1,49 @@
 #version 330 core
 
-#define RADIUS 20.0f
-#define START vec3(400, 300, 1)
-
 out vec4 FragColor;
 
 uniform vec2 mouse;
 
+#define RADIUS 20.0f
+#define START vec3(400, 300, 1)
+
+vec4 drawCircle(vec2 center, float radius, vec4 color);
+vec4 drawLine(vec2 start, vec2 end, float thickness, vec4 color);
+bool isZero(vec2 x);
+bool isZero(vec3 x);
+bool isZero(vec4 x);
+
 void main()
 {
-  // Draw two points
-	if (distance(gl_FragCoord.xy, START.xy) <= RADIUS) {
-		FragColor = vec4(
-			0.0f,
-			1.0f,
-			0.3f,
-			1.0f
-		);
+	vec4 color = drawCircle(
+		START.xy,
+		RADIUS,
+		vec4(0.0f, 1.0f, 0.3f, 1.0f)
+	);
+	if (!isZero(color)) {
+		FragColor = color;
 		return;
 	}
-	// Attach mouse to one point
-	if (distance(gl_FragCoord.xy, mouse.xy) <= RADIUS) {
-		FragColor = vec4(
-			0.0f,
-			1.0f,
-			0.3f,
-			1.0f
-		);
+	color = drawCircle(
+		mouse.xy,
+		RADIUS,
+		vec4(0.0f, 1.0f, 0.3f, 1.0f)
+	);
+	if (!isZero(color)) {
+		FragColor = color;
 		return;
 	}
-	// Draw line between them
-	// TODO: Understand this
-	vec2 ab = mouse.xy - START.xy;
-	vec2 ac = gl_FragCoord.xy - START.xy;
 
-	float _dot = dot(ab, ac) / length(ab); // = length(p13) * cos(angle)
-	vec2 p4 = START.xy + normalize(ab) * _dot;
-	if (length(p4 - gl_FragCoord.xy) < 10/* * sin01(iTime * 4.0 + length(p4 - p1)* 0.02)*/
-				&& length(p4 - START.xy) <= length(ab)
-				&& length(p4 - mouse.xy) <= length(ab)) {
-		FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+	color = drawLine(
+		START.xy,
+		mouse.xy,
+		RADIUS,
+		vec4(0.0f, 1.0f, 0.0f, 1.0f)
+	);
+	if (!isZero(color)) {
+		FragColor = color;
 		return;
 	}
+
 	discard;
 } 
