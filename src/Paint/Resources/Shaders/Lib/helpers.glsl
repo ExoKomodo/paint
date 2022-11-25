@@ -24,17 +24,18 @@ vec4 drawCircle(vec2 center, float radius, vec4 color) {
 }
 
 vec4 drawLine(vec2 start, vec2 end, float thickness, vec4 color) {
-  vec2 ab = end.xy - start.xy;
-	vec2 ac = gl_FragCoord.xy - start.xy;
+  vec2 a_to_b = end.xy - start.xy;
+	vec2 a_to_c = gl_FragCoord.xy - start.xy;
 
-	float _dot = dot(ab, ac) / length(ab); // = length(p13) * cos(angle)
-	vec2 p4 = start.xy + normalize(ab) * _dot;
+	float _dot = dot(a_to_b, a_to_c) / length(a_to_b); // = length(p13) * cos(angle)
+	vec2 closest_point = start.xy + normalize(a_to_b) * _dot;
+  float a_to_b_length = length(a_to_b);
 	if (
-    length(p4 - gl_FragCoord.xy) < thickness &&
-    length(p4 - start.xy) <= length(ab) &&
-    length(p4 - end.xy) <= length(ab)
+    distance(closest_point, gl_FragCoord.xy) < thickness &&
+    distance(closest_point, start.xy) <= a_to_b_length &&
+    distance(closest_point, end.xy) <= a_to_b_length
   ) {
-		return vec4(0.0, 1.0, 0.0, 1.0);
+		return color;
 	}
   return VEC4_ZERO;
 }
