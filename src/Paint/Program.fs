@@ -5,6 +5,7 @@ open SDL2Bindings
 open System
 open System.Numerics
 open Womb
+open Womb.Graphics
 open Womb.Types
 
 let DEFAULT_WIDTH = 800u
@@ -119,8 +120,18 @@ let private drawHandler (config:Config<GameState>) =
       projectionMatrix
       []
 
+  let canvas =
+    { config.State.DrawScene.Canvas with
+        Vertices = config.State.DrawScene.Canvas.Vertices }
   { config with
-      DisplayConfig = Engine.Internals.drawEnd displayConfig }
+      DisplayConfig = Engine.Internals.drawEnd displayConfig
+      State =
+        { config.State with
+            DrawScene =
+              { config.State.DrawScene with
+                  Canvas =
+                    { canvas with
+                        VertexData = Primitives.VertexObjectData.From canvas.Vertices canvas.Indices } } } }
 
 [<EntryPoint>]
 let main argv =
