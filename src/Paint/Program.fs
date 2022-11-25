@@ -122,16 +122,23 @@ let private drawHandler (config:Config<GameState>) =
 
   let canvas =
     { config.State.DrawScene.Canvas with
-        Vertices = config.State.DrawScene.Canvas.Vertices }
+        Vertices = [|
+          // bottom left
+          -0.4f; -0.3f; 0.0f;
+          // shared top left
+          -0.4f; 0.3f; 0.0f;
+          // shared bottom right
+          0.4f; -0.3f; 0.0f;
+          // top right
+          0.4f; 0.3f; 0.0f;
+        |] }
   { config with
       DisplayConfig = Engine.Internals.drawEnd displayConfig
       State =
         { config.State with
             DrawScene =
               { config.State.DrawScene with
-                  Canvas =
-                    { canvas with
-                        VertexData = Primitives.VertexObjectData.From canvas.Vertices canvas.Indices } } } }
+                  Canvas = Primitives.ShadedObject.UpdateVertices canvas.Vertices canvas } } }
 
 [<EntryPoint>]
 let main argv =
