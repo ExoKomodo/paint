@@ -8,7 +8,10 @@ let create =
   let mouse = 
     Primitives.ShadedObject.From
       { Primitives.ShadedObject.Default with
-          FragmentShaderPaths = ["Resources/Shaders/Debug/Mouse/fragment.glsl"]
+          FragmentShaderPaths = [
+            "Resources/Shaders/Lib/helpers.glsl";
+            "Resources/Shaders/Debug/Mouse/fragment.glsl";
+          ]
           VertexShaderPaths = ["Resources/Shaders/Common/vertex.glsl"]
       }
       [|

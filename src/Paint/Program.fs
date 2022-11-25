@@ -1,4 +1,5 @@
 open Argu
+open Paint.Brushes
 open Paint.State
 open SDL2Bindings
 open System
@@ -19,9 +20,31 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
+let private drawLine (config:Config<GameState>) : Config<GameState> =
+  let drawSceneState = config.State.DrawScene
+  let mousePosition = config.Mouse.Position
+  let newPoint = LineBrush.pointNew2D mousePosition.X mousePosition.Y
+  let lines = drawSceneState.LineBrushes
+
+  match LineBrush.create() with
+  | Some(line) ->
+      let lines =
+        match lines with
+        | [] -> [line]
+        | x :: xs ->
+          (line :: lines)
+      { config with
+          State =
+            { config.State with
+                DrawScene = 
+                  { config.State.DrawScene with
+                      LineBrushes = lines } } }
+  | None -> config
+
 let private handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Config<GameState> =
   match event.key.keysym.sym with
   | SDL.SDL_Keycode.SDLK_ESCAPE -> config.StopHandler config
+  | SDL.SDL_Keycode.SDLK_a -> drawLine config
   | SDL.SDL_Keycode.SDLK_F12 ->
     { config with
         State =
@@ -94,6 +117,7 @@ let private drawHandler (config:Config<GameState>) =
       config
       viewMatrix
       projectionMatrix
+      []
 
   { config with
       DisplayConfig = Engine.Internals.drawEnd displayConfig }

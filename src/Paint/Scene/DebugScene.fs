@@ -22,6 +22,8 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   let state = config.State
   let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
+
+  debug $"Mouse: {config.Mouse.Position}"
   
   // Draw mouse
   Primitives.drawShadedObjectWithMvp
