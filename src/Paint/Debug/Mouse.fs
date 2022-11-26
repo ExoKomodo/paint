@@ -38,7 +38,7 @@ let create =
       Some(
         { mouse with
             Shader = shader
-            VertexData = Primitives.VertexObjectData.From mouse.Vertices mouse.Indices }
+            Context = Primitives.ShadedObjectContext.From mouse.Context.Vertices mouse.Context.Indices }
       )
   | None ->
       Logging.fail "Failed to compile debug mouse shader"

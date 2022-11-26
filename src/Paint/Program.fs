@@ -120,25 +120,24 @@ let private drawHandler (config:Config<GameState>) =
       projectionMatrix
       []
 
-  let canvas =
-    { config.State.DrawScene.Canvas with
-        Vertices = [|
-          // bottom left
-          -0.4f; -0.3f; 0.0f;
-          // shared top left
-          -0.4f; 0.3f; 0.0f;
-          // shared bottom right
-          0.4f; -0.3f; 0.0f;
-          // top right
-          0.4f; 0.3f; 0.0f;
-        |] }
+  let vertices = [|
+    // bottom left
+    -0.4f; -0.3f; 0.0f;
+    // shared top left
+    -0.4f; 0.3f; 0.0f;
+    // shared bottom right
+    0.4f; -0.3f; 0.0f;
+    // top right
+    0.4f; 0.3f; 0.0f;
+  |]
+  let canvas = config.State.DrawScene.Canvas
   { config with
       DisplayConfig = Engine.Internals.drawEnd displayConfig
       State =
         { config.State with
             DrawScene =
               { config.State.DrawScene with
-                  Canvas = Primitives.ShadedObject.UpdateVertices canvas.Vertices canvas } } }
+                  Canvas = Primitives.ShadedObject.UpdateVertices vertices canvas } } }
 
 [<EntryPoint>]
 let main argv =

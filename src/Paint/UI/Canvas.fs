@@ -35,7 +35,7 @@ let create =
       Some(
         { canvas with
             Shader = shader
-            VertexData = Primitives.VertexObjectData.From canvas.Vertices canvas.Indices }
+            Context = Primitives.ShadedObjectContext.From canvas.Context.Vertices canvas.Context.Indices }
       )
   | None ->
       Logging.fail "Failed to compile canvas shader"

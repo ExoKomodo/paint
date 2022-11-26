@@ -36,7 +36,7 @@ let create =
       Some(
         { commandPanel with
             Shader = shader
-            VertexData = Primitives.VertexObjectData.From commandPanel.Vertices commandPanel.Indices }
+            Context = Primitives.ShadedObjectContext.From commandPanel.Context.Vertices commandPanel.Context.Indices }
       )
   | None ->
       Logging.fail "Failed to compile command panel shader"

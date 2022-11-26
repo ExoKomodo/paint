@@ -46,7 +46,7 @@ let create () =
       Some(
         { lineBrush with
             Shader = shader
-            VertexData = Primitives.VertexObjectData.From lineBrush.Vertices lineBrush.Indices }
+            Context = Primitives.ShadedObjectContext.From lineBrush.Context.Vertices lineBrush.Context.Indices }
       )
   | None ->
       Logging.fail "Failed to compile line brush shader"
