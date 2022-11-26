@@ -5,6 +5,7 @@ open Paint.State
 open Paint.UI
 open System.Numerics
 open Womb.Graphics
+open Womb.Graphics.Types
 open Womb.Logging
 open Womb.Types
 
@@ -54,7 +55,10 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           scale
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
-          []
+          [
+            Vector2Uniform("start", new Vector2(400f, 300f));
+            Vector2Uniform("end", config.Mouse.Position);
+          ]
     )
     state.DrawScene.LineBrushes |> ignore
 
