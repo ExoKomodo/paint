@@ -42,7 +42,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     (new Vector3(0.5f, 0.5f, 0.0f))
     []
   
-  // Draw objects on canvas
+  // Draw lines on canvas
   List.map
     (
       fun lineBrush ->
@@ -58,7 +58,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     )
     state.DrawScene.LineBrushes |> ignore
 
-  // Draw UI elements
+  // Draw UI elements on top
   Primitives.ShadedObject.Draw
     config
     viewMatrix
