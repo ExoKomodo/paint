@@ -26,7 +26,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   debug $"Mouse: {config.Mouse.Position}"
   
   // Draw mouse
-  Primitives.drawShadedObject
+  Primitives.ShadedObject.Draw
     config
     viewMatrix
     projectionMatrix
