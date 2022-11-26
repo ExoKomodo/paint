@@ -11,7 +11,7 @@ open Womb.Logging
 open Womb.Types
 
 let createUI config =
-  match Mouse.create with
+  match Mouse.create() with
   | Some(mouse) ->
       (config, Some(mouse))
   | None ->

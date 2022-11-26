@@ -1,21 +1,17 @@
 module Paint.Scene.DrawScene
 
 open Paint.Brushes
-open Paint.Lib
 open Paint.State
 open Paint.UI
 open System.Numerics
-open Womb
-open Womb.Backends.OpenGL.Api
-open Womb.Backends.OpenGL.Api.Constants
 open Womb.Graphics
 open Womb.Logging
 open Womb.Types
 
 let createUI config =
-  match Canvas.create with
+  match Canvas.create() with
   | Some(canvas) ->
-    match CommandPanel.create with
+    match CommandPanel.create() with
     | Some(commandPanel) ->
       match LineBrush.create() with
       | Some(lineBrush) ->

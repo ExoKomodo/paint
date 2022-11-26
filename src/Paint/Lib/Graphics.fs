@@ -1,3 +1,21 @@
 module Paint.Lib.Graphics
 
-#nowarn "9" // Unverifiable IL due to fixed expression and NativePtr library usage
+open Womb
+open Womb.Graphics
+
+let createQuad vertexPaths fragmentPaths vertices indices =
+  match (
+    Display.compileShader
+      vertexPaths
+      fragmentPaths
+   ) with
+  | Some(shader) -> 
+      Some(
+        Primitives.ShadedObject.Quad(
+          Primitives.ShadedObjectContext.From vertices indices,
+          shader
+        )
+      )
+  | None ->
+      Logging.fail $"Failed to compile quad shaders:\n{vertexPaths}\n{fragmentPaths}"
+      None
