@@ -1,6 +1,6 @@
 module Paint.Brushes.LineBrush
 
-open Paint.Lib.Graphics
+open Womb.Graphics
 
 type Point = single * single * single
 
@@ -31,4 +31,4 @@ let create () =
     0u; 1u; 2u; // first triangle vertex order as array indices
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
-  createQuad vertexPaths fragmentPaths vertices indices
+  Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices
