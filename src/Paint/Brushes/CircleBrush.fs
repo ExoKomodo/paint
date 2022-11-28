@@ -1,13 +1,13 @@
-module Paint.Brushes.LineBrush
+module Paint.Brushes.CircleBrush
 
-open Paint.Brushes.Types
 open System.Numerics
+open Paint.Brushes.Types
 open Womb.Graphics
 
-let private _create start : option<LineBrush> =
+let private _create center : option<CircleBrush> =
   let fragmentPaths = [
     "Resources/Shaders/Lib/helpers.glsl";
-    "Resources/Shaders/Brushes/LineBrush/fragment.glsl";
+    "Resources/Shaders/Brushes/CircleBrush/fragment.glsl";
   ]
   let vertexPaths = ["Resources/Shaders/Common/vertex.glsl"]
   let vertices = [|
@@ -27,16 +27,17 @@ let private _create start : option<LineBrush> =
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
   | Some primitive ->
       { Primitive = primitive
-        Color = new Vector4(0.0f, 1.0f, 0.3f, 0.9f)
-        Start = start
-        End = None } |> Some
+        Color = new Vector4(1.0f, 0.0f, 0.3f, 0.9f)
+        Center = center
+        Radius = None } |> Some
   | None -> None
 
-let createWithStart start : option<LineBrush> = _create start
+let createWithCenter center : option<CircleBrush> = _create center
 
-let create start _end : option<LineBrush> =
-  match _create start with
-  | Some lineBrush ->
-      { lineBrush with
-          End = _end } |> Some
+let create center radius : option<CircleBrush> =
+  match _create center with
+  | Some circle ->
+      { circle with
+          Center = center
+          Radius = radius } |> Some
   | None -> None
