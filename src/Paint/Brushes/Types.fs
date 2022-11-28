@@ -4,6 +4,7 @@ open System.Numerics
 open Womb.Graphics
 
 type LineBrush =
-  { Primitive: Primitives.ShadedObject
-    Start: Vector2 
-    End: Vector2 }
+  { Primitive: option<Primitives.ShadedObject>
+    Color: Vector4
+    Start: Vector2
+    End: option<Vector2> }

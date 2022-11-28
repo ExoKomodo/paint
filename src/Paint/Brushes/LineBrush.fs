@@ -1,10 +1,10 @@
 module Paint.Brushes.LineBrush
 
-open Paint.Brushes.Types
 open System.Numerics
+open Paint.Brushes.Types
 open Womb.Graphics
 
-let create () : option<LineBrush> =
+let private _create start : option<LineBrush> =
   let fragmentPaths = [
     "Resources/Shaders/Lib/helpers.glsl";
     "Resources/Shaders/Brushes/LineBrush/fragment.glsl";
@@ -26,7 +26,17 @@ let create () : option<LineBrush> =
   |]
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
   | Some primitive ->
-      { Primitive = primitive
-        Start = new Vector2(400f, 300f)
-        End = Vector2.Zero } |> Some
+      { Primitive = Some primitive
+        Color = new Vector4(0.0f, 1.0f, 0.3f, 1.0f)
+        Start = start
+        End = None } |> Some
+  | None -> None
+
+let createWithStart start : option<LineBrush> = _create start
+
+let create start _end : option<LineBrush> =
+  match _create start with
+  | Some lineBrush ->
+      { lineBrush with
+          End = _end } |> Some
   | None -> None
