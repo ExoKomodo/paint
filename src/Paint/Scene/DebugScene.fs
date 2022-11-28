@@ -1,19 +1,16 @@
 module Paint.Scene.DebugScene
 
-open Paint.Brushes
 open Paint.Debug
 open Paint.State
-open Paint.UI
 open System.Numerics
-open Womb
 open Womb.Graphics
 open Womb.Logging
 open Womb.Types
 
 let createUI config =
-  match Mouse.create with
-  | Some(mouse) ->
-      (config, Some(mouse))
+  match Mouse.create() with
+  | Some mouse ->
+      (config, Some mouse)
   | None ->
     fail "Failed to create mouse"
     (config, None)
@@ -26,11 +23,15 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   debug $"Mouse: {config.Mouse.Position}"
   
   // Draw mouse
-  Primitives.drawShadedObjectWithMvp
-    config
-    viewMatrix
-    projectionMatrix
-    state.DebugScene.Mouse
-    scale
-    rotation
-    Vector3.Zero
+  match state.DebugScene.Mouse with
+  | Some mouse -> 
+      Primitives.ShadedObject.Draw
+        config
+        viewMatrix
+        projectionMatrix
+        mouse.Primitive
+        scale
+        rotation
+        Vector3.Zero
+        []
+  | None -> ()

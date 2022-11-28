@@ -5,6 +5,7 @@ open SDL2Bindings
 open System
 open System.Numerics
 open Womb
+open Womb.Graphics
 open Womb.Types
 
 let DEFAULT_WIDTH = 800u
@@ -22,17 +23,14 @@ type CliArguments =
 
 let private drawLine (config:Config<GameState>) : Config<GameState> =
   let drawSceneState = config.State.DrawScene
-  let mousePosition = config.Mouse.Position
-  let newPoint = LineBrush.pointNew2D mousePosition.X mousePosition.Y
   let lines = drawSceneState.LineBrushes
 
   match LineBrush.create() with
-  | Some(line) ->
+  | Some line ->
       let lines =
         match lines with
         | [] -> [line]
-        | x :: xs ->
-          (line :: lines)
+        | _ -> line :: lines
       { config with
           State =
             { config.State with
@@ -56,32 +54,32 @@ let private handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Confi
 
 let private initDebugScene (config:Config<GameState>) =
   match Paint.Scene.DebugScene.createUI config with
-  | (config, Some(mouse)) ->
+  | (config, Some mouse) ->
     { config with
         State =
           { config.State with
               DebugScene =
                 { config.State.DebugScene with
-                    Mouse = mouse } } }
+                    Mouse = Some mouse } } }
   | _ ->
     Logging.fail "Failed to create UI for Debug Scene"
     config
 
 let private initDrawScene (config:Config<GameState>) =
   match Paint.Scene.DrawScene.createUI config with
-  | (config, Some(canvas), Some(commandPanel), Some(lineBrush)) ->
+  | (config, Some canvas, Some commandPanel, Some lineBrush) ->
     { config with
         State =
           { config.State with
               DrawScene =
                 { config.State.DrawScene with
-                    Canvas = canvas
-                    CommandPanel = commandPanel
+                    Canvas = Some canvas
+                    CommandPanel = Some commandPanel
                     LineBrushes = [lineBrush] } } }
-  | (config, Some(canvas), Some(commandPanel), None) ->
+  | (config, Some canvas, Some commandPanel, None) ->
     Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Draw Scene"
     config
-  | (config, Some(canvas), None, None) ->
+  | (config, Some canvas, None, None) ->
     Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Draw Scene"
     config
   | _ ->
@@ -117,10 +115,27 @@ let private drawHandler (config:Config<GameState>) =
       config
       viewMatrix
       projectionMatrix
-      []
 
-  { config with
-      DisplayConfig = Engine.Internals.drawEnd displayConfig }
+  match config.State.DrawScene.Canvas with
+  | Some canvas ->
+      let vertices = [|
+        // bottom left
+        -0.4f; -0.3f; 0.0f;
+        // shared top left
+        -0.4f; 0.3f; 0.0f;
+        // shared bottom right
+        0.4f; -0.3f; 0.0f;
+        // top right
+        0.4f; 0.3f; 0.0f;
+      |]
+      { config with
+          DisplayConfig = Engine.Internals.drawEnd displayConfig
+          State =
+            { config.State with
+                DrawScene =
+                  { config.State.DrawScene with
+                      Canvas = Some { Primitive = Primitives.ShadedObject.UpdateVertices vertices canvas.Primitive } } } }
+  | None -> config
 
 [<EntryPoint>]
 let main argv =
