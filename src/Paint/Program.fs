@@ -1,7 +1,6 @@
 open Argu
-open Paint.Brushes
+open Paint.Handlers
 open Paint.State
-open SDL2Bindings
 open System
 open System.Numerics
 open Womb
@@ -21,37 +20,6 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
 
-let private drawLine (config:Config<GameState>) : Config<GameState> =
-  let drawSceneState = config.State.DrawScene
-  let lines = drawSceneState.LineBrushes
-
-  match LineBrush.create() with
-  | Some line ->
-      let lines =
-        match lines with
-        | [] -> [line]
-        | _ -> line :: lines
-      { config with
-          State =
-            { config.State with
-                DrawScene = 
-                  { config.State.DrawScene with
-                      LineBrushes = lines } } }
-  | None -> config
-
-let private handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Config<GameState> =
-  match event.key.keysym.sym with
-  | SDL.SDL_Keycode.SDLK_ESCAPE -> config.StopHandler config
-  | SDL.SDL_Keycode.SDLK_a -> drawLine config
-  | SDL.SDL_Keycode.SDLK_F12 ->
-    { config with
-        State =
-          { config.State with
-              DebugScene =
-                { config.State.DebugScene with
-                    IsEnabled = not config.State.DebugScene.IsEnabled } } }
-  | _ -> config
-
 let private initDebugScene (config:Config<GameState>) =
   match Paint.Scene.DebugScene.createUI config with
   | (config, Some mouse) ->
@@ -67,7 +35,7 @@ let private initDebugScene (config:Config<GameState>) =
 
 let private initDrawScene (config:Config<GameState>) =
   match Paint.Scene.DrawScene.createUI config with
-  | (config, Some canvas, Some commandPanel, Some lineBrush) ->
+  | (config, Some canvas, Some commandPanel) ->
     { config with
         State =
           { config.State with
@@ -75,11 +43,8 @@ let private initDrawScene (config:Config<GameState>) =
                 { config.State.DrawScene with
                     Canvas = Some canvas
                     CommandPanel = Some commandPanel
-                    LineBrushes = [lineBrush] } } }
-  | (config, Some canvas, Some commandPanel, None) ->
-    Logging.fail "Successfully created UI canvas and Command Panel but failed to create Line Brush for Draw Scene"
-    config
-  | (config, Some canvas, None, None) ->
+                    LineBrushes = list.Empty } } }
+  | (config, Some canvas, None) ->
     Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Draw Scene"
     config
   | _ ->
@@ -89,6 +54,7 @@ let private initDrawScene (config:Config<GameState>) =
 let private initHandler (config:Config<GameState>) =
   initDebugScene config
     |> initDrawScene
+    |> help
 
 let private calculateMatrices cameraPosition cameraTarget =
   let viewMatrix = Matrix4x4.CreateLookAt(

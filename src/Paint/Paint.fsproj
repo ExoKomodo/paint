@@ -51,6 +51,8 @@
     <Compile Include="Scene/DebugScene.fs" />
     <Compile Include="Scene/DrawScene.fs" />
     <!-- Main -->
+    <Compile Include="Helpers.fs" />
+    <Compile Include="Handlers.fs" />
     <Compile Include="Program.fs" />
 
     <PackageReference Include="Argu" Version="6.1.1">

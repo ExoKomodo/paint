@@ -4,11 +4,12 @@ out vec4 FragColor;
 
 uniform vec2 start;
 uniform vec2 end;
+uniform vec4 line_color;
 
 #define RADIUS 20.0f
 
 vec4 drawCircle(vec2 center, float radius, vec4 color);
-vec4 drawLine(vec2 start, vec2 end, float thickness, vec4 color);
+vec4 drawLine(vec2 start, vec2 end, float thickness, vec4 _color);
 bool isZero(vec4 x);
 
 void main()
@@ -16,7 +17,7 @@ void main()
 	vec4 color = drawCircle(
 		start,
 		RADIUS,
-		vec4(0.0f, 1.0f, 0.3f, 1.0f)
+		line_color
 	);
 	if (!isZero(color)) {
 		FragColor = color;
@@ -25,7 +26,7 @@ void main()
 	color = drawCircle(
 		end,
 		RADIUS,
-		vec4(0.0f, 1.0f, 0.3f, 1.0f)
+		line_color
 	);
 	if (!isZero(color)) {
 		FragColor = color;
@@ -36,7 +37,7 @@ void main()
 		start,
 		end,
 		RADIUS,
-		vec4(0.0f, 1.0f, 0.0f, 1.0f)
+		line_color
 	);
 	if (!isZero(color)) {
 		FragColor = color;
