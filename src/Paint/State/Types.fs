@@ -3,7 +3,6 @@ module Paint.State
 open Paint.Brushes.Types
 open Paint.Debug.Types
 open Paint.UI.Types
-open Womb.Graphics
 
 type DebugSceneState =
   { Mouse: option<Mouse>;
@@ -16,11 +15,13 @@ type DebugSceneState =
 type DrawSceneState =
   { Canvas: option<Canvas>;
     CommandPanel: option<CommandPanel>;
+    CircleBrushes: list<CircleBrush>;
     LineBrushes: list<LineBrush>; }
   
     static member Default = {
       Canvas = None
       CommandPanel = None
+      CircleBrushes = List.Empty
       LineBrushes = List.Empty }
 
 

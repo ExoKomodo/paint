@@ -46,41 +46,55 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun lineBrush ->
-        match lineBrush with
-        | { Primitive = Some primitive; End = None; } ->
-          Primitives.ShadedObject.Draw
-            config
-            viewMatrix
-            projectionMatrix
-            primitive
-            scale
-            rotation
-            (new Vector3(0.5f, 0.5f, 0.0f))
-            [
-              Vector2Uniform("start", lineBrush.Start);
-              Vector2Uniform("end", config.Mouse.Position);
-              Vector4Uniform(
-                "line_color",
-                new Vector4(lineBrush.Color.X, lineBrush.Color.Y, lineBrush.Color.Z, 0.3f)
-              );
-            ]
-        | { Primitive = Some primitive; End = Some _end; } ->
-          Primitives.ShadedObject.Draw
-            config
-            viewMatrix
-            projectionMatrix
-            primitive
-            scale
-            rotation
-            (new Vector3(0.5f, 0.5f, 0.0f))
-            [
-              Vector2Uniform("start", lineBrush.Start);
-              Vector2Uniform("end", _end);
-              Vector4Uniform("line_color", lineBrush.Color);
-            ]
-        | _ -> ()
+        let (alpha, _end) =
+          match lineBrush with
+          | { End = Some _end; } -> (lineBrush.Color.W, _end)
+          | { End = None; } -> (0.3f, config.Mouse.Position)
+        Primitives.ShadedObject.Draw
+          config
+          viewMatrix
+          projectionMatrix
+          lineBrush.Primitive
+          scale
+          rotation
+          (new Vector3(0.5f, 0.5f, 0.0f))
+          [
+            Vector2Uniform("start", lineBrush.Start);
+            Vector2Uniform("end", _end);
+            Vector4Uniform(
+              "line_color",
+              new Vector4(lineBrush.Color.X, lineBrush.Color.Y, lineBrush.Color.Z, alpha)
+            );
+          ]
     )
     state.DrawScene.LineBrushes |> ignore
+  
+  // Draw circles on canvas
+  List.map
+    (
+      fun circleBrush ->
+        let (alpha, radius) =
+          match circleBrush with
+          | { Radius = Some radius; } -> (circleBrush.Color.W, radius)
+          | { Radius = None; } -> (0.3f, Vector2.Distance(config.Mouse.Position, circleBrush.Center))
+        Primitives.ShadedObject.Draw
+          config
+          viewMatrix
+          projectionMatrix
+          circleBrush.Primitive
+          scale
+          rotation
+          (new Vector3(0.5f, 0.5f, 0.0f))
+          [
+            Vector2Uniform("in_center", circleBrush.Center);
+            Vector1Uniform("in_radius", radius);
+            Vector4Uniform(
+              "in_color",
+              new Vector4(circleBrush.Color.X, circleBrush.Color.Y, circleBrush.Color.Z, alpha)
+            );
+          ]
+    )
+    state.DrawScene.CircleBrushes |> ignore
 
   // Draw UI elements on top
   match state.DrawScene.CommandPanel with
