@@ -25,9 +25,8 @@ let create () : option<LineBrush> =
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
-  | Some(primitive) -> Some(
+  | Some primitive ->
       { Primitive = primitive
         Start = new Vector2(400f, 300f)
-        End = Vector2.Zero }
-    )
+        End = Vector2.Zero } |> Some
   | None -> None

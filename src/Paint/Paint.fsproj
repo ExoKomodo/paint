@@ -36,8 +36,10 @@
     
     <!-- Library code -->
     <Compile Include="Lib/Graphics.fs" />
-    <!-- State -->
+    <!-- Types -->
     <Compile Include="Brushes/Types.fs" />
+    <Compile Include="Debug/Types.fs" />
+    <Compile Include="UI/Types.fs" />
     <Compile Include="State/Types.fs" />
     <!-- Debug Scene -->
     <Compile Include="Debug/Mouse.fs" />

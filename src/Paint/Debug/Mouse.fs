@@ -1,8 +1,10 @@
 module Paint.Debug.Mouse
 
+open Paint.Debug.Types
+open System.Numerics
 open Womb.Graphics
 
-let create () =
+let create (): option<Mouse> =
   let fragmentPaths = [
     "Resources/Shaders/Lib/helpers.glsl";
     "Resources/Shaders/Debug/Mouse/fragment.glsl";
@@ -22,4 +24,8 @@ let create () =
     0u; 1u; 2u; // first triangle vertex order as array indices
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
-  Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices
+  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
+  | Some primitive ->
+    { Primitive = primitive
+      Position = Vector2.Zero } |> Some
+  | None -> None

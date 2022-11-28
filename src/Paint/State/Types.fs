@@ -1,24 +1,26 @@
 module Paint.State
 
 open Paint.Brushes.Types
+open Paint.Debug.Types
+open Paint.UI.Types
 open Womb.Graphics
 
 type DebugSceneState =
-  { Mouse: Primitives.ShadedObject;
+  { Mouse: option<Mouse>;
     IsEnabled: bool; }
   
     static member Default = {
-      Mouse = Primitives.ShadedObject.Default
+      Mouse = None
       IsEnabled = false }
 
 type DrawSceneState =
-  { Canvas: Primitives.ShadedObject;
-    CommandPanel: Primitives.ShadedObject;
+  { Canvas: option<Canvas>;
+    CommandPanel: option<CommandPanel>;
     LineBrushes: list<LineBrush>; }
   
     static member Default = {
-      Canvas = Primitives.ShadedObject.Default
-      CommandPanel = Primitives.ShadedObject.Default
+      Canvas = None
+      CommandPanel = None
       LineBrushes = List.Empty }
 
 

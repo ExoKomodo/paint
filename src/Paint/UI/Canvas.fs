@@ -1,8 +1,9 @@
 module Paint.UI.Canvas
 
+open Paint.UI.Types
 open Womb.Graphics
 
-let create () =
+let create (): option<Canvas> =
   let fragmentPaths = ["Resources/Shaders/UI/Canvas/fragment.glsl"]
   let vertexPaths = ["Resources/Shaders/Common/vertex.glsl"]
   let vertices = [|
@@ -19,4 +20,6 @@ let create () =
     0u; 1u; 2u; // first triangle vertex order as array indices
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
-  Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices
+  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
+  | Some primitive -> Some { Primitive = primitive }
+  | None -> None
