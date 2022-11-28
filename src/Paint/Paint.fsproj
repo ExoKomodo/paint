@@ -37,8 +37,9 @@
     <!-- Library code -->
     <Compile Include="Lib/Graphics.fs" />
     <!-- State -->
+    <Compile Include="Brushes/Types.fs" />
     <Compile Include="State/Types.fs" />
-    <!-- Debug -->
+    <!-- Debug Scene -->
     <Compile Include="Debug/Mouse.fs" />
     <!-- Rendered objects -->
     <Compile Include="Brushes/LineBrush.fs" />

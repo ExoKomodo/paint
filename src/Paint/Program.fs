@@ -23,8 +23,6 @@ type CliArguments =
 
 let private drawLine (config:Config<GameState>) : Config<GameState> =
   let drawSceneState = config.State.DrawScene
-  let mousePosition = config.Mouse.Position
-  let newPoint = LineBrush.pointNew2D mousePosition.X mousePosition.Y
   let lines = drawSceneState.LineBrushes
 
   match LineBrush.create() with
@@ -32,8 +30,7 @@ let private drawLine (config:Config<GameState>) : Config<GameState> =
       let lines =
         match lines with
         | [] -> [line]
-        | x :: xs ->
-          (line :: lines)
+        | _ -> line :: lines
       { config with
           State =
             { config.State with

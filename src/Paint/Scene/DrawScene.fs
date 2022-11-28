@@ -1,6 +1,7 @@
 module Paint.Scene.DrawScene
 
 open Paint.Brushes
+open Paint.Brushes.Types
 open Paint.State
 open Paint.UI
 open System.Numerics
@@ -47,17 +48,21 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun lineBrush ->
+        // Cause line to follow mouse for one point
+        let lineBrush =
+          { lineBrush with
+              End = config.Mouse.Position }
         Primitives.ShadedObject.Draw
           config
           viewMatrix
           projectionMatrix
-          lineBrush
+          lineBrush.Primitive
           scale
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           [
-            Vector2Uniform("start", new Vector2(400f, 300f));
-            Vector2Uniform("end", config.Mouse.Position);
+            Vector2Uniform("start", lineBrush.Start);
+            Vector2Uniform("end", lineBrush.End);
           ]
     )
     state.DrawScene.LineBrushes |> ignore

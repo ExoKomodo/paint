@@ -1,5 +1,6 @@
 module Paint.State
 
+open Paint.Brushes.Types
 open Womb.Graphics
 
 type DebugSceneState =
@@ -13,7 +14,7 @@ type DebugSceneState =
 type DrawSceneState =
   { Canvas: Primitives.ShadedObject;
     CommandPanel: Primitives.ShadedObject;
-    LineBrushes: list<Primitives.ShadedObject>; }
+    LineBrushes: list<LineBrush>; }
   
     static member Default = {
       Canvas = Primitives.ShadedObject.Default

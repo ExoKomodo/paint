@@ -1,17 +1,10 @@
 module Paint.Brushes.LineBrush
 
+open Paint.Brushes.Types
+open System.Numerics
 open Womb.Graphics
 
-type Point = single * single * single
-
-type Data = {
-  Start: Point;
-  End: option<Point>;
-}
-
-let pointNew2D x y = Point(x, y, 0.0f)
-
-let create () =
+let create () : option<LineBrush> =
   let fragmentPaths = [
     "Resources/Shaders/Lib/helpers.glsl";
     "Resources/Shaders/Brushes/LineBrush/fragment.glsl";
@@ -31,4 +24,10 @@ let create () =
     0u; 1u; 2u; // first triangle vertex order as array indices
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
-  Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices
+  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
+  | Some(primitive) -> Some(
+      { Primitive = primitive
+        Start = new Vector2(400f, 300f)
+        End = Vector2.Zero }
+    )
+  | None -> None
