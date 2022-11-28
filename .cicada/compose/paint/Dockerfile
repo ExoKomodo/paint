@@ -1,1 +1,1 @@
-FROM exokomodo/development:paint-base-latest
+FROM exokomodo/paint:base-latest
