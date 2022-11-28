@@ -27,7 +27,7 @@ let private _create start : option<LineBrush> =
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
   | Some primitive ->
       { Primitive = Some primitive
-        Color = new Vector4(0.0f, 1.0f, 0.3f, 1.0f)
+        Color = new Vector4(0.0f, 1.0f, 0.3f, 0.3f)
         Start = start
         End = None } |> Some
   | None -> None

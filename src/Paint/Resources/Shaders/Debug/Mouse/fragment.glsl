@@ -14,6 +14,7 @@ bool isZero(vec4 x);
 
 void main()
 {
+  FragColor = vec4(0, 0, 0, 0);
   vec4 color = drawCircle(
     mouse.xy,
     RADIUS,
@@ -23,6 +24,4 @@ void main()
     FragColor = color;
     return;
   }
-
-  discard;
 } 
