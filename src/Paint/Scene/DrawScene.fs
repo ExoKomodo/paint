@@ -47,6 +47,23 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     (
       fun lineBrush ->
         match lineBrush with
+        | { Primitive = Some primitive; End = None; } ->
+          Primitives.ShadedObject.Draw
+            config
+            viewMatrix
+            projectionMatrix
+            primitive
+            scale
+            rotation
+            (new Vector3(0.5f, 0.5f, 0.0f))
+            [
+              Vector2Uniform("start", lineBrush.Start);
+              Vector2Uniform("end", config.Mouse.Position);
+              Vector4Uniform(
+                "line_color",
+                new Vector4(lineBrush.Color.X, lineBrush.Color.Y, lineBrush.Color.Z, 0.3f)
+              );
+            ]
         | { Primitive = Some primitive; End = Some _end; } ->
           Primitives.ShadedObject.Draw
             config
