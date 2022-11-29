@@ -27,7 +27,7 @@ let private _create center : option<CircleBrush> =
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
   | Some primitive ->
       { Primitive = primitive
-        Color = new Vector4(1.0f, 0.0f, 0.3f, 0.9f)
+        Color = new Vector4(1.0f, 0.0f, 0.3f, 0.4f)
         Center = center
         Radius = None } |> Some
   | None -> None

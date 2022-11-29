@@ -49,7 +49,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         let (alpha, _end) =
           match lineBrush with
           | { End = Some _end; } -> (lineBrush.Color.W, _end)
-          | { End = None; } -> (0.3f, config.Mouse.Position)
+          | { End = None; } -> (0.1f, config.Mouse.Position)
         Primitives.ShadedObject.Draw
           config
           viewMatrix
@@ -59,10 +59,10 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           [
-            Vector2Uniform("start", lineBrush.Start);
-            Vector2Uniform("end", _end);
+            Vector2Uniform("in_start", lineBrush.Start);
+            Vector2Uniform("in_end", _end);
             Vector4Uniform(
-              "line_color",
+              "in_color",
               new Vector4(lineBrush.Color.X, lineBrush.Color.Y, lineBrush.Color.Z, alpha)
             );
           ]
@@ -76,7 +76,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         let (alpha, radius) =
           match circleBrush with
           | { Radius = Some radius; } -> (circleBrush.Color.W, radius)
-          | { Radius = None; } -> (0.3f, Vector2.Distance(config.Mouse.Position, circleBrush.Center))
+          | { Radius = None; } -> (0.1f, Vector2.Distance(config.Mouse.Position, circleBrush.Center))
         Primitives.ShadedObject.Draw
           config
           viewMatrix
