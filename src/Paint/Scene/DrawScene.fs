@@ -24,6 +24,10 @@ let createUI config =
     (config, None, None)
 
 let draw (config:Config<GameState>) viewMatrix projectionMatrix =
+  let viewport = new Vector2(
+    config.DisplayConfig.Width |> single,
+    config.DisplayConfig.Height |> single
+  )
   let state = config.State
   let scale = Vector3.One * 1.0f
   let rotation = Vector3.UnitZ * 0.0f
@@ -46,10 +50,10 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun lineBrush ->
-        let (alpha, _end) =
+        let (alpha, start, _end) =
           match lineBrush with
-          | { End = Some _end; } -> (lineBrush.Color.W, _end)
-          | { End = None; } -> (0.1f, config.Mouse.Position)
+          | { End = Some _end; } -> (lineBrush.Color.W, lineBrush.Start * viewport, _end * viewport)
+          | { End = None; } -> (0.1f, lineBrush.Start * viewport, config.Mouse.Position)
         Primitives.ShadedObject.Draw
           config
           viewMatrix
@@ -59,7 +63,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           [
-            Vector2Uniform("in_start", lineBrush.Start);
+            Vector2Uniform("in_start", start);
             Vector2Uniform("in_end", _end);
             Vector4Uniform(
               "in_color",
@@ -73,10 +77,10 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun circleBrush ->
-        let (alpha, radius) =
+        let (alpha, radiusPoint, center) =
           match circleBrush with
-          | { Radius = Some radius; } -> (circleBrush.Color.W, radius)
-          | { Radius = None; } -> (0.1f, Vector2.Distance(config.Mouse.Position, circleBrush.Center))
+          | { RadiusPoint = Some radiusPoint; } -> (circleBrush.Color.W, radiusPoint * viewport, circleBrush.Center * viewport)
+          | { RadiusPoint = None; } -> (0.1f, config.Mouse.Position, circleBrush.Center * viewport)
         Primitives.ShadedObject.Draw
           config
           viewMatrix
@@ -86,8 +90,8 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           [
-            Vector2Uniform("in_center", circleBrush.Center);
-            Vector1Uniform("in_radius", radius);
+            Vector2Uniform("in_center", center);
+            Vector1Uniform("in_radius", Vector2.Distance(radiusPoint, center));
             Vector4Uniform(
               "in_color",
               new Vector4(circleBrush.Color.X, circleBrush.Color.Y, circleBrush.Color.Z, alpha)

@@ -7,7 +7,7 @@ type CircleBrush =
   { Primitive: Primitives.ShadedObject
     Color: Vector4
     Center: Vector2
-    Radius: option<single> }
+    RadiusPoint: option<Vector2> }
 
 type LineBrush =
   { Primitive: Primitives.ShadedObject

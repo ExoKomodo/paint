@@ -14,17 +14,17 @@ let private addCirclePoint (config:Config<GameState>) : Config<GameState> =
   let circles =
     match drawSceneState.CircleBrushes with
     | [] ->
-        match CircleBrush.createWithCenter config.Mouse.Position with
+        match CircleBrush.createWithCenter (config.VirtualMousePosition()) with
         | Some circle -> [circle]
         | None -> []
-    | circle :: _ when circle.Radius.IsSome ->
-        match CircleBrush.createWithCenter config.Mouse.Position with
+    | circle :: _ when circle.RadiusPoint.IsSome ->
+        match CircleBrush.createWithCenter (config.VirtualMousePosition()) with
         | Some circle -> circle :: drawSceneState.CircleBrushes
         | None -> drawSceneState.CircleBrushes
     | circle :: circles ->
       (
         { circle with
-            Radius = Vector2.Distance(config.Mouse.Position, circle.Center) |> Some }
+            RadiusPoint = config.VirtualMousePosition() |> Some }
       ) :: circles
   { config with
       State =
@@ -39,17 +39,17 @@ let private addLineBrushPoint (config:Config<GameState>) : Config<GameState> =
   let lines =
     match drawSceneState.LineBrushes with
     | [] ->
-        match LineBrush.createWithStart config.Mouse.Position with
+        match LineBrush.createWithStart (config.VirtualMousePosition()) with
         | Some line -> [line]
         | None -> []
     | line :: _ when line.End.IsSome ->
-        match LineBrush.createWithStart config.Mouse.Position with
+        match LineBrush.createWithStart (config.VirtualMousePosition()) with
         | Some line -> line :: drawSceneState.LineBrushes
         | None -> drawSceneState.LineBrushes
     | line :: lines ->
       (
         { line with
-            End = Some config.Mouse.Position }
+            End = config.VirtualMousePosition() |> Some }
       ) :: lines
   { config with
       State =

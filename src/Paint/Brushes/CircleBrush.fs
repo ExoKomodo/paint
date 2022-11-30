@@ -29,15 +29,15 @@ let private _create center : option<CircleBrush> =
       { Primitive = primitive
         Color = new Vector4(1.0f, 0.0f, 0.3f, 0.4f)
         Center = center
-        Radius = None } |> Some
+        RadiusPoint = None } |> Some
   | None -> None
 
 let createWithCenter center : option<CircleBrush> = _create center
 
-let create center radius : option<CircleBrush> =
+let create center radiusPoint : option<CircleBrush> =
   match _create center with
   | Some circle ->
       { circle with
           Center = center
-          Radius = radius } |> Some
+          RadiusPoint = radiusPoint } |> Some
   | None -> None
