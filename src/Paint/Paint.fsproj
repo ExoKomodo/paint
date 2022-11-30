@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\engine\src\Womb\Womb.fsproj">
+    <ProjectReference Include="..\..\lib\engine\src\Womb\Womb.fsproj">
       <Properties Condition="$(DefineConstants.Contains('DEBUG'))">
         DefineConstants=$(DefineConstants);DEBUG
       </Properties>
