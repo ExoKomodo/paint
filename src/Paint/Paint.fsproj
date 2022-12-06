@@ -10,6 +10,9 @@
      <DefineConstants>$(DefineConstants);TREAT_OPENGL_LINK_FAILURE_AS_ERROR</DefineConstants>
      <DefineConstants>$(DefineConstants);INLINE_LOGGER</DefineConstants> 
     <Configurations>Release;Debug</Configurations>
+    <OtherFlags>
+      --warn:5 --warnaserror
+    </OtherFlags>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -35,6 +38,7 @@
     </Content>
     
     <!-- Types -->
+    <Compile Include="Lib/Types.fs" />
     <Compile Include="Brushes/Types.fs" />
     <Compile Include="UI/Types.fs" />
     <Compile Include="Scene/Types.fs" />

@@ -3,6 +3,7 @@ module Paint.Scene.Types
 open Paint.Brushes.Types
 open Paint.UI.Types
 
+[<NoComparison>]
 type DebugSceneState =
   { Mouse: option<DebugMouse>;
     IsEnabled: bool; }
@@ -11,6 +12,7 @@ type DebugSceneState =
       Mouse = None
       IsEnabled = false }
 
+[<NoComparison>]
 type DrawSceneState =
   { Canvas: option<Canvas>;
     CommandPanel: option<CommandPanel>;

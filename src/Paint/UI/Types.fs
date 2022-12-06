@@ -9,6 +9,7 @@ type Canvas =
 type CommandPanel =
   { Primitive: Primitives.ShadedObject }
 
+[<NoComparison>]
 type DebugMouse =
   { Primitive: Primitives.ShadedObject
-    Position: Vector2 }
+    Position: single * single }

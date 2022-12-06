@@ -49,10 +49,19 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun lineBrush ->
-        let (alpha, start, _end) =
+        let (a, start, _end) =
           match lineBrush with
-          | { End = Some _end; } -> (lineBrush.Color.W, lineBrush.Start * viewport, _end * viewport)
-          | { End = None; } -> (0.1f, lineBrush.Start * viewport, config.Mouse.Position)
+          | { End = Some _end; } ->
+              let (startX, startY) = lineBrush.Start
+              let (endX, endY) = _end
+              let (r, g, b, a) = lineBrush.Color
+              let start = new Vector2(startX, startY) * viewport
+              let _end = new Vector2(endX, endY) * viewport
+              (a, (start.X, start.Y), (_end.X, _end.Y))
+          | { End = None; } ->
+              let (startX, startY) = lineBrush.Start
+              (0.1f, new Vector2(startX, startY) * viewport, config.Mouse.Position)
+        let (r, g, b, _) = lineBrush.Color
         Primitives.ShadedObject.Draw
           config
           viewMatrix
@@ -62,11 +71,11 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           [
-            Vector2Uniform("in_start", start);
-            Vector2Uniform("in_end", _end);
+            Vector2Uniform("in_start", (start.X, start.Y));
+            Vector2Uniform("in_end", (_end.X, _end.Y));
             Vector4Uniform(
               "in_color",
-              new Vector4(lineBrush.Color.X, lineBrush.Color.Y, lineBrush.Color.Z, alpha)
+              (r, g, b, a)
             );
           ]
     )
@@ -76,10 +85,17 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun circleBrush ->
-        let (alpha, radiusPoint, center) =
+        let (a, radiusPoint, center) =
           match circleBrush with
-          | { RadiusPoint = Some radiusPoint; } -> (circleBrush.Color.W, radiusPoint * viewport, circleBrush.Center * viewport)
-          | { RadiusPoint = None; } -> (0.1f, config.Mouse.Position, circleBrush.Center * viewport)
+          | { RadiusPoint = Some radiusPoint; } ->
+              let (_, _, _, a) = circleBrush.Color
+              let (radiusX, radiusY) = radiusPoint
+              let (centerX, centerY) = circleBrush.Center
+              (a, new Vector2(radiusX, radiusY) * viewport, new Vector2(centerX, centerY) * viewport)
+          | { RadiusPoint = None; } ->
+              let (centerX, centerY) = circleBrush.Center
+              (0.1f, config.Mouse.Position, new Vector2(centerX, centerY) * viewport)
+        let (r, g, b, _) = circleBrush.Color
         Primitives.ShadedObject.Draw
           config
           viewMatrix
@@ -93,7 +109,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
             Vector1Uniform("in_radius", Vector2.Distance(radiusPoint, center));
             Vector4Uniform(
               "in_color",
-              new Vector4(circleBrush.Color.X, circleBrush.Color.Y, circleBrush.Color.Z, alpha)
+              new Vector4(r, g, b, a)
             );
           ]
     )

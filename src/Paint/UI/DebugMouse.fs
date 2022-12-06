@@ -27,6 +27,6 @@ let create (): option<DebugMouse> =
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
   | Some primitive ->
     { Primitive = primitive
-      Position = Vector2.Zero } |> Some
+      Position = (0f, 0f) } |> Some
   | None -> None
 

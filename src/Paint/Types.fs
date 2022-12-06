@@ -16,6 +16,7 @@ type CliArguments =
       | Width _ -> $"set the initial display width (default: {CliArguments.DefaultWidth})"
       | Height _ -> $"set the initial display height (default: {CliArguments.DefaultHeight})"
 
+[<NoComparison>]
 type GameState =
   { DebugScene: DebugSceneState
     DrawScene: DrawSceneState }
