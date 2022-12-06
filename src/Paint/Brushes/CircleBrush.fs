@@ -12,13 +12,13 @@ let private _create center : option<CircleBrush> =
   let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
   let vertices = [|
     // bottom left
-    -0.5f; -0.5f; 0.0f;
+    -0.4f; -0.3f; 0.0f;
     // shared top left
-    -0.5f; 0.5f; 0.0f;
+    -0.4f; 0.3f; 0.0f;
     // shared bottom right
-    0.5f; -0.5f; 0.0f;
+    0.4f; -0.3f; 0.0f;
     // top right
-    0.5f; 0.5f; 0.0f;
+    0.4f; 0.3f; 0.0f;
   |]
   let indices = [|
     0u; 1u; 2u; // first triangle vertex order as array indices
