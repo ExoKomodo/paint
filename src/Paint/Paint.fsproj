@@ -37,7 +37,8 @@
     <!-- Types -->
     <Compile Include="Brushes/Types.fs" />
     <Compile Include="UI/Types.fs" />
-    <Compile Include="State.fs" />
+    <Compile Include="Scene/Types.fs" />
+    <Compile Include="Types.fs" />
     <!-- Debug Scene -->
     <Compile Include="UI/DebugMouse.fs" />
     <!-- Rendered objects -->

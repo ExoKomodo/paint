@@ -1,6 +1,6 @@
 open Argu
 open Paint.Scene
-open Paint.State
+open Paint.Types
 open System
 open System.Numerics
 open Womb
@@ -17,8 +17,8 @@ type CliArguments =
   interface IArgParserTemplate with
     member s.Usage =
       match s with
-      | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
-      | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
+      | Width _ -> $"set the initial display width (default: {DEFAULT_WIDTH})"
+      | Height _ -> $"set the initial display height (default: {DEFAULT_HEIGHT})"
 
 let help (config:Config<GameState>) : Config<GameState> =
   Logging.info "

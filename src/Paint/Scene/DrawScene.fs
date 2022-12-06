@@ -1,8 +1,7 @@
 module Paint.Scene.DrawScene
 
-open Paint.Brushes
 open Paint.Brushes.Types
-open Paint.State
+open Paint.Types
 open Paint.UI
 open System.Numerics
 open Womb.Graphics

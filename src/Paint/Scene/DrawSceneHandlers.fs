@@ -2,10 +2,8 @@ module Paint.Scene.DrawSceneHandlers
 
 open Paint.Brushes
 open Paint.Brushes.Types
-open Paint.State
+open Paint.Types
 open SDL2Bindings
-open System.Numerics
-open Womb
 open Womb.Types
 
 let private addCirclePoint (config:Config<GameState>) : Config<GameState> =

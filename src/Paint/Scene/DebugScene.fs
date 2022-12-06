@@ -1,6 +1,6 @@
 module Paint.Scene.DebugScene
 
-open Paint.State
+open Paint.Types
 open Paint.UI
 open System.Numerics
 open Womb.Graphics

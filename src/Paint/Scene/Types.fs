@@ -1,4 +1,4 @@
-module Paint.State
+module Paint.Scene.Types
 
 open Paint.Brushes.Types
 open Paint.UI.Types
@@ -22,13 +22,3 @@ type DrawSceneState =
       CommandPanel = None
       CircleBrushes = List.Empty
       LineBrushes = List.Empty }
-
-
-type GameState =
-  { DebugScene: DebugSceneState
-    DrawScene: DrawSceneState }
-  
-    static member Default = {
-      DebugScene = DebugSceneState.Default
-      DrawScene = DrawSceneState.Default }
-
