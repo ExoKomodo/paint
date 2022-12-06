@@ -7,20 +7,7 @@ open Womb
 open Womb.Graphics
 open Womb.Types
 
-let DEFAULT_WIDTH = 800u
-let DEFAULT_HEIGHT = 600u
-
-type CliArguments =
-  | [<Unique>][<EqualsAssignmentOrSpaced>] Width of width:uint
-  | [<Unique>][<EqualsAssignmentOrSpaced>] Height of height:uint
-
-  interface IArgParserTemplate with
-    member s.Usage =
-      match s with
-      | Width _ -> $"set the initial display width (default: {DEFAULT_WIDTH})"
-      | Height _ -> $"set the initial display height (default: {DEFAULT_HEIGHT})"
-
-let help (config:Config<GameState>) : Config<GameState> =
+let help config =
   Logging.info "
 <ESC>   Quit the game
 <C>     Add circle brush anchor point (Once to create center point. Twice to calculate radius.)
@@ -29,8 +16,8 @@ let help (config:Config<GameState>) : Config<GameState> =
   "
   config
 
-let private initDebugScene (config:Config<GameState>) =
-  match Paint.Scene.DebugScene.createUI config with
+let private initDebugScene config =
+  match DebugScene.createUI config with
   | (config, Some mouse) ->
     { config with
         State =
@@ -42,8 +29,8 @@ let private initDebugScene (config:Config<GameState>) =
     Logging.fail "Failed to create UI for Debug Scene"
     config
 
-let private initDrawScene (config:Config<GameState>) =
-  match Paint.Scene.DrawScene.createUI config with
+let private initDrawScene config =
+  match DrawScene.createUI config with
   | (config, Some canvas, Some commandPanel) ->
     { config with
         State =
@@ -60,7 +47,7 @@ let private initDrawScene (config:Config<GameState>) =
     Logging.fail "Failed to create UI for Draw Scene"
     config
 
-let private initHandler (config:Config<GameState>) =
+let private initHandler config =
   initDebugScene config
     |> initDrawScene
     |> help
@@ -74,19 +61,19 @@ let private calculateMatrices cameraPosition cameraTarget =
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
-let private drawHandler (config:Config<GameState>) =
+let private drawHandler config =
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
   let displayConfig = Engine.Internals.drawBegin config.DisplayConfig
-  Paint.Scene.DrawScene.draw
+  DrawScene.draw
     config
     viewMatrix
     projectionMatrix
 
   if config.State.DebugScene.IsEnabled then
-    Paint.Scene.DebugScene.draw
+    DebugScene.draw
       config
       viewMatrix
       projectionMatrix
@@ -122,8 +109,8 @@ let main argv =
   let parsedArgs =
     ArgumentParser.Create<CliArguments>(programName="Paint", errorHandler=errorHandler).Parse argv
 
-  let width = parsedArgs.GetResult(Width, DEFAULT_WIDTH)
-  let height = parsedArgs.GetResult(Height, DEFAULT_HEIGHT)
+  let width = parsedArgs.GetResult(Width, CliArguments.DefaultWidth)
+  let height = parsedArgs.GetResult(Height, CliArguments.DefaultHeight)
 
   ( Game.play
       "Paint"
