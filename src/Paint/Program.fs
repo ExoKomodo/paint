@@ -116,7 +116,7 @@ let main argv =
       "Paint"
       width
       height
-      GameState.Default
+      (GameState.Default())
       (Some initHandler)
       (Some DrawSceneHandlers.handleKeyUp)
       (Some drawHandler) ).ExitCode

@@ -12,4 +12,3 @@ type CommandPanel =
 type DebugMouse =
   { Primitive: Primitives.ShadedObject
     Position: Vector2 }
-

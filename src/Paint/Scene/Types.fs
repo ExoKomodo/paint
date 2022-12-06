@@ -7,7 +7,7 @@ type DebugSceneState =
   { Mouse: option<DebugMouse>;
     IsEnabled: bool; }
   
-    static member Default = {
+    static member Default () = {
       Mouse = None
       IsEnabled = false }
 
@@ -17,7 +17,7 @@ type DrawSceneState =
     CircleBrushes: list<CircleBrush>;
     LineBrushes: list<LineBrush>; }
   
-    static member Default = {
+    static member Default () = {
       Canvas = None
       CommandPanel = None
       CircleBrushes = List.Empty

@@ -20,6 +20,6 @@ type GameState =
   { DebugScene: DebugSceneState
     DrawScene: DrawSceneState }
   
-    static member Default = {
-      DebugScene = DebugSceneState.Default
-      DrawScene = DrawSceneState.Default }
+    static member Default() = {
+      DebugScene = DebugSceneState.Default()
+      DrawScene = DrawSceneState.Default() }
