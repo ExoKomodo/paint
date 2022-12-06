@@ -1,11 +1,10 @@
 module Paint.State
 
 open Paint.Brushes.Types
-open Paint.Debug.Types
 open Paint.UI.Types
 
 type DebugSceneState =
-  { Mouse: option<Mouse>;
+  { Mouse: option<DebugMouse>;
     IsEnabled: bool; }
   
     static member Default = {

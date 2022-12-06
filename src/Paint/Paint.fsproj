@@ -30,19 +30,16 @@
     </ProjectReference>
     
     <!-- Copy shaders on build -->
-    <Content Include="Resources\Shaders\**\*.glsl" >
+    <Content Include="Assets\Shaders\**\*.glsl" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     
-    <!-- Library code -->
-    <Compile Include="Lib/Graphics.fs" />
     <!-- Types -->
     <Compile Include="Brushes/Types.fs" />
-    <Compile Include="Debug/Types.fs" />
     <Compile Include="UI/Types.fs" />
-    <Compile Include="State/Types.fs" />
+    <Compile Include="State.fs" />
     <!-- Debug Scene -->
-    <Compile Include="Debug/Mouse.fs" />
+    <Compile Include="UI/DebugMouse.fs" />
     <!-- Rendered objects -->
     <Compile Include="Brushes/CircleBrush.fs" />
     <Compile Include="Brushes/LineBrush.fs" />
@@ -50,10 +47,9 @@
     <Compile Include="UI/CommandPanel.fs" />
     <!-- Game scenes -->
     <Compile Include="Scene/DebugScene.fs" />
+    <Compile Include="Scene/DrawSceneHandlers.fs" />
     <Compile Include="Scene/DrawScene.fs" />
     <!-- Main -->
-    <Compile Include="Helpers.fs" />
-    <Compile Include="Handlers.fs" />
     <Compile Include="Program.fs" />
 
     <PackageReference Include="Argu" Version="6.1.1">

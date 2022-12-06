@@ -1,15 +1,15 @@
-module Paint.Debug.Mouse
+module Paint.UI.DebugMouse
 
-open Paint.Debug.Types
+open Paint.UI.Types
 open System.Numerics
 open Womb.Graphics
 
-let create (): option<Mouse> =
+let create (): option<DebugMouse> =
   let fragmentPaths = [
-    "Resources/Shaders/Lib/helpers.glsl";
-    "Resources/Shaders/Debug/Mouse/fragment.glsl";
+    "Assets/Shaders/Lib/helpers.glsl";
+    "Assets/Shaders/Debug/Mouse/fragment.glsl";
   ]
-  let vertexPaths = ["Resources/Shaders/Common/vertex.glsl"]
+  let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
   let vertices = [|
     // bottom left
     0.0f; 0.0f; 0.0f;
@@ -29,3 +29,4 @@ let create (): option<Mouse> =
     { Primitive = primitive
       Position = Vector2.Zero } |> Some
   | None -> None
+

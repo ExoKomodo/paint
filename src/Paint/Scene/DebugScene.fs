@@ -1,14 +1,14 @@
 module Paint.Scene.DebugScene
 
-open Paint.Debug
 open Paint.State
+open Paint.UI
 open System.Numerics
 open Womb.Graphics
 open Womb.Logging
 open Womb.Types
 
 let createUI config =
-  match Mouse.create() with
+  match DebugMouse.create() with
   | Some mouse ->
       (config, Some mouse)
   | None ->

@@ -6,10 +6,10 @@ open Womb.Graphics
 
 let private _create center : option<CircleBrush> =
   let fragmentPaths = [
-    "Resources/Shaders/Lib/helpers.glsl";
-    "Resources/Shaders/Brushes/CircleBrush/fragment.glsl";
+    "Assets/Shaders/Lib/helpers.glsl";
+    "Assets/Shaders/Brushes/CircleBrush/fragment.glsl";
   ]
-  let vertexPaths = ["Resources/Shaders/Common/vertex.glsl"]
+  let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
   let vertices = [|
     // bottom left
     -0.5f; -0.5f; 0.0f;

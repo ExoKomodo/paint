@@ -1,5 +1,5 @@
 open Argu
-open Paint.Handlers
+open Paint.Scene
 open Paint.State
 open System
 open System.Numerics
@@ -19,6 +19,15 @@ type CliArguments =
       match s with
       | Width _ -> $"set the initial display width (default: %d{DEFAULT_WIDTH})"
       | Height _ -> $"set the initial display height (default: %d{DEFAULT_HEIGHT})"
+
+let help (config:Config<GameState>) : Config<GameState> =
+  Logging.info "
+<ESC>   Quit the game
+<C>     Add circle brush anchor point (Once to create center point. Twice to calculate radius.)
+<SPACE> Add line brush anchor point (Once to create start point. Twice to anchor end point.)
+<F12>   Show debug menu
+  "
+  config
 
 let private initDebugScene (config:Config<GameState>) =
   match Paint.Scene.DebugScene.createUI config with
@@ -122,5 +131,5 @@ let main argv =
       height
       GameState.Default
       (Some initHandler)
-      (Some handleKeyUp)
+      (Some DrawSceneHandlers.handleKeyUp)
       (Some drawHandler) ).ExitCode

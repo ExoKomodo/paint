@@ -1,4 +1,4 @@
-module Paint.Handlers
+module Paint.Scene.DrawSceneHandlers
 
 open Paint.Brushes
 open Paint.Brushes.Types
@@ -58,22 +58,11 @@ let private addLineBrushPoint (config:Config<GameState>) : Config<GameState> =
               { config.State.DrawScene with
                   LineBrushes = lines }}}
 
-let help (config:Config<GameState>) : Config<GameState> =
-  Logging.info "
-<ESC>   Quit the game
-<C>     Add circle brush anchor point (Once to create center point. Twice to calculate radius.)
-<SPACE> Add line brush anchor point (Once to create start point. Twice to anchor end point.)
-<F12>   Show debug menu
-<H>     Show this help screen
-  "
-  config
-
 let handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Config<GameState> =
   match event.key.keysym.sym with
   | SDL.SDL_Keycode.SDLK_ESCAPE -> config.StopHandler config
   | SDL.SDL_Keycode.SDLK_SPACE -> addLineBrushPoint config
   | SDL.SDL_Keycode.SDLK_c -> addCirclePoint config
-  | SDL.SDL_Keycode.SDLK_h -> help config
   | SDL.SDL_Keycode.SDLK_F12 ->
     { config with
         State =

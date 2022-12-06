@@ -4,8 +4,8 @@ open Paint.UI.Types
 open Womb.Graphics
 
 let create (): option<Canvas> =
-  let fragmentPaths = ["Resources/Shaders/UI/Canvas/fragment.glsl"]
-  let vertexPaths = ["Resources/Shaders/Common/vertex.glsl"]
+  let fragmentPaths = ["Assets/Shaders/UI/Canvas/fragment.glsl"]
+  let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
   let vertices = [|
     // bottom left
     -0.4f; -0.3f; 0.0f;
