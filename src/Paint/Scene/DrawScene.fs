@@ -55,12 +55,11 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
               let (startX, startY) = lineBrush.Start
               let (endX, endY) = _end
               let (r, g, b, a) = lineBrush.Color
-              let start = new Vector2(startX, startY) * viewport
-              let _end = new Vector2(endX, endY) * viewport
-              (a, (start.X, start.Y), (_end.X, _end.Y))
+              (a, new Vector2(startX, startY) * viewport, new Vector2(endX, endY) * viewport)
           | { End = None; } ->
               let (startX, startY) = lineBrush.Start
-              (0.1f, new Vector2(startX, startY) * viewport, config.Mouse.Position)
+              let (mouseX, mouseY) = config.Mouse.Position
+              (0.1f, new Vector2(startX, startY) * viewport, new Vector2(mouseX, mouseY))
         let (r, g, b, _) = lineBrush.Color
         Primitives.ShadedObject.Draw
           config
@@ -94,7 +93,8 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
               (a, new Vector2(radiusX, radiusY) * viewport, new Vector2(centerX, centerY) * viewport)
           | { RadiusPoint = None; } ->
               let (centerX, centerY) = circleBrush.Center
-              (0.1f, config.Mouse.Position, new Vector2(centerX, centerY) * viewport)
+              let (mouseX, mouseY) = config.Mouse.Position
+              (0.1f, new Vector2(mouseX, mouseY), new Vector2(centerX, centerY) * viewport)
         let (r, g, b, _) = circleBrush.Color
         Primitives.ShadedObject.Draw
           config
@@ -105,11 +105,11 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           rotation
           (new Vector3(0.5f, 0.5f, 0.0f))
           [
-            Vector2Uniform("in_center", center);
+            Vector2Uniform("in_center", (center.X, center.Y));
             Vector1Uniform("in_radius", Vector2.Distance(radiusPoint, center));
             Vector4Uniform(
               "in_color",
-              new Vector4(r, g, b, a)
+              (r, g, b, a)
             );
           ]
     )
