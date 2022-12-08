@@ -80,8 +80,14 @@ let private handleKeyUp config (event:SDL.SDL_Event) =
                     IsEnabled = not config.State.DebugScene.IsEnabled } } }
   | _ -> config
 
-let private handleMouseDown config (event:SDL.SDL_Event) = config
-let private handleMouseUp config (event:SDL.SDL_Event) = config
+let private handleMouseDown config (event:SDL.SDL_Event) =
+  match event.button.button |> uint32 with
+  | SDL.SDL_BUTTON_LEFT -> addLineBrushPoint config
+  | SDL.SDL_BUTTON_RIGHT -> addCirclePoint config
+  | _ -> config
+
+let private handleMouseUp config (event:SDL.SDL_Event) =
+  handleMouseDown config event
 
 let handleEvent config (event:SDL.SDL_Event) =
   match event.typeFSharp with
