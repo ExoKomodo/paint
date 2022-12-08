@@ -6,7 +6,7 @@ open Paint.Types
 open SDL2Bindings
 open Womb.Types
 
-let private addCirclePoint (config:Config<GameState>) : Config<GameState> =
+let private addCirclePoint config =
   let drawSceneState = config.State.DrawScene
 
   let circles =
@@ -31,7 +31,7 @@ let private addCirclePoint (config:Config<GameState>) : Config<GameState> =
               { config.State.DrawScene with
                   CircleBrushes = circles }}}
 
-let private addLineBrushPoint (config:Config<GameState>) : Config<GameState> =
+let private addLineBrushPoint config =
   let drawSceneState = config.State.DrawScene
 
   let lines =
@@ -56,7 +56,17 @@ let private addLineBrushPoint (config:Config<GameState>) : Config<GameState> =
               { config.State.DrawScene with
                   LineBrushes = lines }}}
 
-let handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Config<GameState> =
+
+let private handleKeyDown config (event:SDL.SDL_Event) =
+  match event.key.repeat with
+  | 0uy ->
+    match event.key.keysym.sym with
+    | SDL.SDL_Keycode.SDLK_SPACE -> addLineBrushPoint config
+    | SDL.SDL_Keycode.SDLK_c -> addCirclePoint config
+    | _ -> config
+  | _ -> config
+
+let private handleKeyUp config (event:SDL.SDL_Event) =
   match event.key.keysym.sym with
   | SDL.SDL_Keycode.SDLK_ESCAPE -> config.StopHandler config
   | SDL.SDL_Keycode.SDLK_SPACE -> addLineBrushPoint config
@@ -68,4 +78,15 @@ let handleKeyUp (config:Config<GameState>) (event:SDL.SDL_Event) : Config<GameSt
               DebugScene =
                 { config.State.DebugScene with
                     IsEnabled = not config.State.DebugScene.IsEnabled } } }
+  | _ -> config
+
+let private handleMouseDown config (event:SDL.SDL_Event) = config
+let private handleMouseUp config (event:SDL.SDL_Event) = config
+
+let handleEvent config (event:SDL.SDL_Event) =
+  match event.typeFSharp with
+  | SDL.SDL_EventType.SDL_KEYUP -> handleKeyUp config event
+  | SDL.SDL_EventType.SDL_KEYDOWN -> handleKeyDown config event
+  | SDL.SDL_EventType.SDL_MOUSEBUTTONUP -> handleMouseUp config event
+  | SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN -> handleMouseDown config event
   | _ -> config

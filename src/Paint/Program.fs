@@ -10,8 +10,8 @@ open Womb.Types
 let help config =
   Logging.info "
 <ESC>   Quit the game
-<C>     Add circle brush anchor point (Once to create center point. Twice to calculate radius.)
-<SPACE> Add line brush anchor point (Once to create start point. Twice to anchor end point.)
+<C>     Add circle brush anchor point (Down to create center point. Up to calculate radius.)
+<SPACE> Add line brush anchor point (Down to create start point. Up to anchor end point.)
 <F12>   Show debug menu
   "
   config
@@ -61,7 +61,7 @@ let private calculateMatrices cameraPosition cameraTarget =
   let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
-let private drawHandler config =
+let private loopHandler config =
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
@@ -118,5 +118,5 @@ let main argv =
       height
       (GameState.Default())
       (Some initHandler)
-      (Some DrawSceneHandlers.handleKeyUp)
-      (Some drawHandler) ).ExitCode
+      (Some DrawSceneHandlers.handleEvent)
+      (Some loopHandler) ).ExitCode
