@@ -31,21 +31,25 @@ let private initDebugScene config =
 
 let private initDrawScene config =
   match DrawScene.createUI config with
-  | (config, Some canvas, Some commandPanel) ->
-    { config with
-        State =
-          { config.State with
-              DrawScene =
-                { config.State.DrawScene with
-                    Canvas = Some canvas
-                    CommandPanel = Some commandPanel
-                    LineBrushes = list.Empty } } }
-  | (config, Some canvas, None) ->
-    Logging.fail "Successfully created UI canvas but failed to create UI Command Panel for Draw Scene"
-    config
+  | (config, Some canvas, Some commandPanel, Some circleButton) ->
+      { config with
+          State =
+            { config.State with
+                DrawScene =
+                  { config.State.DrawScene with
+                      Canvas = Some canvas
+                      CircleButton = Some circleButton
+                      CommandPanel = Some commandPanel
+                      LineBrushes = list.Empty } } }
+  | (config, Some canvas, Some commandPanel, None) ->
+      Logging.fail "Successfully created UI canvas and command panel, but failed to create UI and circle button for Draw Scene"
+      config
+  | (config, Some canvas, None, None) ->
+      Logging.fail "Successfully created UI canvas but failed to create UI Command Panel and circle button for Draw Scene"
+      config
   | _ ->
-    Logging.fail "Failed to create UI for Draw Scene"
-    config
+      Logging.fail "Failed to create UI for Draw Scene"
+      config
 
 let private initHandler config =
   initDebugScene config

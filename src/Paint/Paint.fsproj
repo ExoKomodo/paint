@@ -47,6 +47,7 @@
     <!-- Rendered objects -->
     <Compile Include="Brushes/CircleBrush.fs" />
     <Compile Include="Brushes/LineBrush.fs" />
+    <Compile Include="UI/Button.fs" />
     <Compile Include="UI/Canvas.fs" />
     <Compile Include="UI/CommandPanel.fs" />
     <!-- Game scenes -->

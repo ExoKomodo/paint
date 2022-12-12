@@ -14,13 +14,18 @@ let createUI config =
   | Some canvas ->
     match CommandPanel.create() with
     | Some commandPanel ->
-        (config, Some canvas, Some commandPanel)
+        match Button.create() with
+        | Some circleButton ->
+            (config, Some canvas, Some commandPanel, Some circleButton)
+        | None ->
+            fail "Failed to create circle button"
+            (config, Some canvas, Some commandPanel, None)
     | None ->
-      fail "Failed to create command panel"
-      (config, Some canvas, None)
+        fail "Failed to create command panel"
+        (config, Some canvas, None, None)
   | None ->
-    fail "Failed to create canvas"
-    (config, None, None)
+      fail "Failed to create canvas"
+      (config, None, None, None)
 
 let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   let viewport = new Vector2(
@@ -128,3 +133,18 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
       (new Vector3(0.075f, 0.5f, 0.0f))
       []
   | None -> fail "Command Panel is None"
+
+  match state.DrawScene.CircleButton with
+  | Some button ->
+    Primitives.ShadedObject.Draw
+      config
+      viewMatrix
+      projectionMatrix
+      button.Primitive
+      scale
+      rotation
+      (new Vector3(0.0f, 0.0f, 0.0f))
+      [
+        Vector4Uniform("in_color", Womb.Lib.Types.Vector4(0.0f, 1.0f, 0.0f, 1.0f))
+      ]
+  | None -> fail "Circle Button is None"

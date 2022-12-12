@@ -1,7 +1,9 @@
 module Paint.UI.Types
 
-open System.Numerics
 open Womb.Graphics
+
+type Button =
+  { Primitive: Primitives.ShadedObject }
 
 type Canvas =
   { Primitive: Primitives.ShadedObject }

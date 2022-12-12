@@ -1,16 +1,12 @@
-module Paint.UI.DebugMouse
+module Paint.UI.Button
 
 open Paint.UI.Types
-open System.Numerics
 open Womb.Graphics
 
-let create (): option<DebugMouse> =
-  let fragmentPaths = [
-    "Assets/Shaders/Lib/helpers.glsl";
-    "Assets/Shaders/Debug/Mouse/fragment.glsl";
-  ]
+let create (): option<Button> =
+  let fragmentPaths = ["Assets/Shaders/UI/Button/fragment.glsl"]
   let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
-  let (width, height) = 0.5f, 0.5f
+  let (width, height) = 0.05f, 0.05f
   let vertices = [|
     // bottom left
     -width; -height; 0.0f;
@@ -26,8 +22,5 @@ let create (): option<DebugMouse> =
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
-  | Some primitive ->
-    { Primitive = primitive
-      Position = (0f, 0f) } |> Some
+  | Some primitive -> Some { Primitive = primitive }
   | None -> None
-
