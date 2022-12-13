@@ -1,7 +1,7 @@
 module Paint.UI.DebugMouse
 
+open Womb.Lib.Types
 open Paint.UI.Types
-open System.Numerics
 open Womb.Graphics
 
 let create (): option<DebugMouse> =
@@ -13,21 +13,22 @@ let create (): option<DebugMouse> =
   let (width, height) = 0.5f, 0.5f
   let vertices = [|
     // bottom left
-    -width; -height; 0.0f;
+    -width / 2.0f; -height / 2.0f; 0.0f;
     // shared top left
-    -width; height; 0.0f;
+    -width / 2.0f; height / 2.0f; 0.0f;
     // shared bottom right
-    width; -height; 0.0f;
+    width / 2.0f; -height / 2.0f; 0.0f;
     // top right
-    width; height; 0.0f;
+    width / 2.0f; height / 2.0f; 0.0f;
   |]
   let indices = [|
     0u; 1u; 2u; // first triangle vertex order as array indices
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
-  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
-  | Some primitive ->
-    { Primitive = primitive
-      Position = (0f, 0f) } |> Some
+  let transform =
+    { Transform.Default() with
+        Scale = 4f, 4f, 4f }
+  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices transform with
+  | Some primitive -> { Primitive = primitive } |> Some
   | None -> None
 

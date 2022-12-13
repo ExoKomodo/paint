@@ -17,8 +17,6 @@ let createUI config =
 
 let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   let state = config.State
-  let scale = Vector3.One * 1.0f
-  let rotation = Vector3.UnitZ * 0.0f
 
   debug $"Mouse: {config.Mouse.Position}"
   
@@ -30,8 +28,5 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         viewMatrix
         projectionMatrix
         mouse.Primitive
-        scale
-        rotation
-        Vector3.Zero
         []
   | None -> ()

@@ -62,7 +62,7 @@ let private calculateMatrices cameraPosition cameraTarget =
     cameraTarget,
     Vector3.UnitY
   )
-  let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, 1f, 0f, 1f, 0f, 1f)
+  let projectionMatrix = Matrix4x4.CreateOrthographicOffCenter(-1f, 1f, -1f, 1f, 0f, 1f)
   (viewMatrix, projectionMatrix)
 
 let private loopHandler config =
@@ -81,27 +81,8 @@ let private loopHandler config =
       config
       viewMatrix
       projectionMatrix
-
-  match config.State.DrawScene.Canvas with
-  | Some canvas ->
-      let vertices = [|
-        // bottom left
-        -0.4f; -0.3f; 0.0f;
-        // shared top left
-        -0.4f; 0.3f; 0.0f;
-        // shared bottom right
-        0.4f; -0.3f; 0.0f;
-        // top right
-        0.4f; 0.3f; 0.0f;
-      |]
-      { config with
-          DisplayConfig = Engine.Internals.drawEnd displayConfig
-          State =
-            { config.State with
-                DrawScene =
-                  { config.State.DrawScene with
-                      Canvas = Some { Primitive = Primitives.ShadedObject.UpdateVertices vertices canvas.Primitive } } } }
-  | None -> config
+  { config with
+          DisplayConfig = Engine.Internals.drawEnd displayConfig }
 
 [<EntryPoint>]
 let main argv =

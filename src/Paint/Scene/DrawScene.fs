@@ -33,22 +33,41 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     config.DisplayConfig.Height |> single
   )
   let state = config.State
-  let scale = Vector3.One * 1.0f
-  let rotation = Vector3.UnitZ * 0.0f
   
   // Draw canvas
   match state.DrawScene.Canvas with
   | Some canvas ->
-    Primitives.ShadedObject.Draw
-      config
-      viewMatrix
-      projectionMatrix
-      canvas.Primitive
-      scale
-      rotation
-      (new Vector3(0.5f, 0.5f, 0.0f))
-      []
+      Primitives.ShadedObject.Draw
+        config
+        viewMatrix
+        projectionMatrix
+        canvas.Primitive
+        []
   | None -> fail "Canvas is None"
+
+  // Draw UI elements on top
+  
+  match state.DrawScene.CommandPanel with
+  | Some commandPanel ->
+      Primitives.ShadedObject.Draw
+        config
+        viewMatrix
+        projectionMatrix
+        commandPanel.Primitive
+        []
+  | None -> fail "Command Panel is None"
+
+  match state.DrawScene.CircleButton with
+  | Some button ->
+      Primitives.ShadedObject.Draw
+        config
+        viewMatrix
+        projectionMatrix
+        button.Primitive
+        [
+          Vector4Uniform("in_color", Womb.Lib.Types.Vector4(0.0f, 1.0f, 0.0f, 1.0f))
+        ]
+  | None -> fail "Circle Button is None"
   
   // Draw lines on canvas
   List.map
@@ -71,9 +90,6 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           viewMatrix
           projectionMatrix
           lineBrush.Primitive
-          scale
-          rotation
-          (new Vector3(0.5f, 0.5f, 0.0f))
           [
             Vector2Uniform("in_start", (start.X, start.Y));
             Vector2Uniform("in_end", (_end.X, _end.Y));
@@ -106,9 +122,6 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           viewMatrix
           projectionMatrix
           circleBrush.Primitive
-          scale
-          rotation
-          (new Vector3(0.5f, 0.5f, 0.0f))
           [
             Vector2Uniform("in_center", (center.X, center.Y));
             Vector1Uniform("in_radius", Vector2.Distance(radiusPoint, center));
@@ -119,32 +132,3 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           ]
     )
     state.DrawScene.CircleBrushes |> ignore
-
-  // Draw UI elements on top
-  match state.DrawScene.CommandPanel with
-  | Some commandPanel ->
-    Primitives.ShadedObject.Draw
-      config
-      viewMatrix
-      projectionMatrix
-      commandPanel.Primitive
-      scale
-      rotation
-      (new Vector3(0.075f, 0.5f, 0.0f))
-      []
-  | None -> fail "Command Panel is None"
-
-  match state.DrawScene.CircleButton with
-  | Some button ->
-    Primitives.ShadedObject.Draw
-      config
-      viewMatrix
-      projectionMatrix
-      button.Primitive
-      scale
-      rotation
-      (new Vector3(0.0f, 0.0f, 0.0f))
-      [
-        Vector4Uniform("in_color", Womb.Lib.Types.Vector4(0.0f, 1.0f, 0.0f, 1.0f))
-      ]
-  | None -> fail "Circle Button is None"

@@ -13,5 +13,4 @@ type CommandPanel =
 
 [<NoComparison>]
 type DebugMouse =
-  { Primitive: Primitives.ShadedObject
-    Position: single * single }
+  { Primitive: Primitives.ShadedObject }
