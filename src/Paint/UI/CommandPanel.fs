@@ -7,7 +7,7 @@ open Womb.Lib.Types
 let create (): option<CommandPanel> =
   let fragmentPaths = ["Assets/Shaders/UI/CommandPanel/fragment.glsl"]
   let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
-  let (width, height) = 0.025f, 0.3f
+  let (width, height) = 0.1f, 1.2f
   let vertices = [|
     // bottom left
     -width / 2.0f; -height / 2.0f; 0.0f;
@@ -25,8 +25,7 @@ let create (): option<CommandPanel> =
 
   let transform =
     { Transform.Default() with
-        Scale = 4f, 4f, 4f
-        Translation = -0.95f, 0f, 0f}
+        Translation = -1f + (1.5f * width), 0f, 0f}
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices transform with
   | Some primitive -> Some { Primitive = primitive }
   | None -> None

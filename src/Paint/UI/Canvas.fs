@@ -7,7 +7,7 @@ open Womb.Lib.Types
 let create (): option<Canvas> =
   let fragmentPaths = ["Assets/Shaders/UI/Canvas/fragment.glsl"]
   let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
-  let (width, height) = 0.4f, 0.3f
+  let (width, height) = 1.6f, 1.2f
   let vertices = [|
     // bottom left
     -width / 2.0f; -height / 2.0f; 0.0f;
@@ -23,9 +23,7 @@ let create (): option<Canvas> =
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
 
-  let transform =
-    { Transform.Default() with
-        Scale = 4f, 4f, 4f }
+  let transform = Transform.Default()
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices transform with
   | Some primitive -> Some { Primitive = primitive }
   | None -> None

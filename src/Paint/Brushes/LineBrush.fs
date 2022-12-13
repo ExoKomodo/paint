@@ -10,7 +10,7 @@ let private _create start : option<LineBrush> =
     "Assets/Shaders/Brushes/LineBrush/fragment.glsl";
   ]
   let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
-  let (width, height) = 0.4f, 0.3f
+  let (width, height) = 1.6f, 1.2f
   let vertices = [|
     // bottom left
     -width / 2.0f; -height / 2.0f; 0.0f;
@@ -25,9 +25,7 @@ let private _create start : option<LineBrush> =
     0u; 1u; 2u; // first triangle vertex order as array indices
     1u; 2u; 3u; // second triangle vertex order as array indices
   |]
-  let transform =
-    { Transform.Default() with
-        Scale = 4f, 4f, 4f }
+  let transform = Transform.Default()
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices transform with
   | Some primitive ->
       { Primitive = primitive

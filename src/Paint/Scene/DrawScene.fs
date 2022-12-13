@@ -44,30 +44,6 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         canvas.Primitive
         []
   | None -> fail "Canvas is None"
-
-  // Draw UI elements on top
-  
-  match state.DrawScene.CommandPanel with
-  | Some commandPanel ->
-      Primitives.ShadedObject.Draw
-        config
-        viewMatrix
-        projectionMatrix
-        commandPanel.Primitive
-        []
-  | None -> fail "Command Panel is None"
-
-  match state.DrawScene.CircleButton with
-  | Some button ->
-      Primitives.ShadedObject.Draw
-        config
-        viewMatrix
-        projectionMatrix
-        button.Primitive
-        [
-          Vector4Uniform("in_color", Womb.Lib.Types.Vector4(0.0f, 1.0f, 0.0f, 1.0f))
-        ]
-  | None -> fail "Circle Button is None"
   
   // Draw lines on canvas
   List.map
@@ -132,3 +108,26 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
           ]
     )
     state.DrawScene.CircleBrushes |> ignore
+
+  // Draw UI elements on top
+  match state.DrawScene.CommandPanel with
+  | Some commandPanel ->
+      Primitives.ShadedObject.Draw
+        config
+        viewMatrix
+        projectionMatrix
+        commandPanel.Primitive
+        []
+  | None -> fail "Command Panel is None"
+
+  match state.DrawScene.CircleButton with
+  | Some button ->
+      Primitives.ShadedObject.Draw
+        config
+        viewMatrix
+        projectionMatrix
+        button.Primitive
+        [
+          Vector4Uniform("in_color", Womb.Lib.Types.Vector4(0.0f, 1.0f, 0.0f, 1.0f))
+        ]
+  | None -> fail "Circle Button is None"
