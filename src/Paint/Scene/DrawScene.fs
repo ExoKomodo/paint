@@ -14,18 +14,23 @@ let createUI config =
   | Some canvas ->
     match CommandPanel.create() with
     | Some commandPanel ->
-        match Button.create() with
+        match Button.create "CircleButton" (-0.85f, 0.55f, 0f) with
         | Some circleButton ->
-            (config, Some canvas, Some commandPanel, Some circleButton)
+            match Button.create "LineButton" (-0.85f, 0.45f, 0f) with
+            | Some lineButton ->
+                (config, Some canvas, Some commandPanel, Some circleButton, Some lineButton)
+            | None ->
+                fail "Failed to create line button"
+                (config, Some canvas, Some commandPanel, None, None)
         | None ->
             fail "Failed to create circle button"
-            (config, Some canvas, Some commandPanel, None)
+            (config, Some canvas, Some commandPanel, None, None)
     | None ->
         fail "Failed to create command panel"
-        (config, Some canvas, None, None)
+        (config, Some canvas, None, None, None)
   | None ->
       fail "Failed to create canvas"
-      (config, None, None, None)
+      (config, None, None, None, None)
 
 let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   let viewport = new Vector2(
@@ -48,18 +53,19 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   // Draw lines on canvas
   List.map
     (
-      fun lineBrush ->
+      fun (lineBrush:Paint.Brushes.Types.LineBrush) ->
+        let curried_map = Womb.Lib.Math.map -1f 1f 0f 1f
         let (a, start, _end) =
           match lineBrush with
           | { End = Some _end; } ->
               let (startX, startY) = lineBrush.Start
               let (endX, endY) = _end
               let (r, g, b, a) = lineBrush.Color
-              (a, new Vector2(startX, startY) * viewport, new Vector2(endX, endY) * viewport)
+              (a, new Vector2(curried_map startX, curried_map startY) * viewport, new Vector2(curried_map endX, curried_map endY) * viewport)
           | { End = None; } ->
               let (startX, startY) = lineBrush.Start
               let (mouseX, mouseY) = config.Mouse.Position
-              (0.1f, new Vector2(startX, startY) * viewport, new Vector2(mouseX, mouseY))
+              (0.1f, new Vector2(curried_map startX, curried_map startY) * viewport, new Vector2(mouseX, mouseY))
         let (r, g, b, _) = lineBrush.Color
         Primitives.ShadedObject.Draw
           config
@@ -81,17 +87,18 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
   List.map
     (
       fun circleBrush ->
+        let curried_map = Womb.Lib.Math.map -1f 1f 0f 1f
         let (a, radiusPoint, center) =
           match circleBrush with
           | { RadiusPoint = Some radiusPoint; } ->
               let (_, _, _, a) = circleBrush.Color
               let (radiusX, radiusY) = radiusPoint
               let (centerX, centerY) = circleBrush.Center
-              (a, new Vector2(radiusX, radiusY) * viewport, new Vector2(centerX, centerY) * viewport)
+              (a, new Vector2(curried_map radiusX, curried_map radiusY) * viewport, new Vector2(curried_map centerX, curried_map centerY) * viewport)
           | { RadiusPoint = None; } ->
               let (centerX, centerY) = circleBrush.Center
               let (mouseX, mouseY) = config.Mouse.Position
-              (0.1f, new Vector2(mouseX, mouseY), new Vector2(centerX, centerY) * viewport)
+              (0.1f, new Vector2(mouseX, mouseY), new Vector2(curried_map centerX, curried_map centerY) * viewport)
         let (r, g, b, _) = circleBrush.Color
         Primitives.ShadedObject.Draw
           config
@@ -119,15 +126,32 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         commandPanel.Primitive
         []
   | None -> fail "Command Panel is None"
+  
+  List.map
+    (
+      fun (buttonOpt:option<Types.Button>) ->
+        match buttonOpt with
+        | Some button ->
+            let idle_color = Womb.Lib.Types.Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+            let hover_color = Womb.Lib.Types.Vector4(0.0f, 1.0f, 1.0f, 1.0f)
+            let color =
+              match button.Primitive with
+              | Primitives.ShadedObject.Quad(context, shader, transform, width, height) ->
+                  let (x, y, _) = transform.Translation
+                  let rect = new System.Drawing.RectangleF(x - (width / 2f), y - (height / 2f), width, height)
+                  let (x, y) = config.VirtualMousePosition()
+                  if rect.Contains(x, y) then
+                    hover_color
+                  else
+                    idle_color
 
-  match state.DrawScene.CircleButton with
-  | Some button ->
-      Primitives.ShadedObject.Draw
-        config
-        viewMatrix
-        projectionMatrix
-        button.Primitive
-        [
-          Vector4Uniform("in_color", Womb.Lib.Types.Vector4(0.0f, 1.0f, 0.0f, 1.0f))
-        ]
-  | None -> fail "Circle Button is None"
+            Primitives.ShadedObject.Draw
+              config
+              viewMatrix
+              projectionMatrix
+              button.Primitive
+              [
+                Vector4Uniform("in_color", color);
+              ]
+        | None -> fail "Button is None"
+    ) [state.DrawScene.CircleButton; state.DrawScene.LineButton] |> ignore

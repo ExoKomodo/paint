@@ -18,6 +18,7 @@ type DrawSceneState =
     CommandPanel: option<CommandPanel>;
     CircleBrushes: list<CircleBrush>;
     CircleButton: option<Button>;
+    LineButton: option<Button>;
     LineBrushes: list<LineBrush>; }
   
     static member Default () = {
@@ -25,4 +26,5 @@ type DrawSceneState =
       CommandPanel = None
       CircleBrushes = List.Empty
       CircleButton = None
+      LineButton = None
       LineBrushes = List.Empty }

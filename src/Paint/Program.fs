@@ -31,7 +31,7 @@ let private initDebugScene config =
 
 let private initDrawScene config =
   match DrawScene.createUI config with
-  | (config, Some canvas, Some commandPanel, Some circleButton) ->
+  | (config, Some canvas, Some commandPanel, Some circleButton, Some lineButton) ->
       { config with
           State =
             { config.State with
@@ -39,13 +39,17 @@ let private initDrawScene config =
                   { config.State.DrawScene with
                       Canvas = Some canvas
                       CircleButton = Some circleButton
+                      LineButton = Some lineButton
                       CommandPanel = Some commandPanel
                       LineBrushes = list.Empty } } }
-  | (config, Some canvas, Some commandPanel, None) ->
-      Logging.fail "Successfully created UI canvas and command panel, but failed to create UI and circle button for Draw Scene"
+  | (config, Some canvas, Some commandPanel, Some circleButton, None) ->
+      Logging.fail "Successfully created UI canvas and command panel, but failed to create UI and line button for Draw Scene"
       config
-  | (config, Some canvas, None, None) ->
-      Logging.fail "Successfully created UI canvas but failed to create UI Command Panel and circle button for Draw Scene"
+  | (config, Some canvas, Some commandPanel, None, None) ->
+      Logging.fail "Successfully created UI canvas and command panel, but failed to create UI, circle button, and line button for Draw Scene"
+      config
+  | (config, Some canvas, None, None, None) ->
+      Logging.fail "Successfully created UI canvas but failed to create UI Command Panel, circle button, and line button for Draw Scene"
       config
   | _ ->
       Logging.fail "Failed to create UI for Draw Scene"
@@ -66,6 +70,7 @@ let private calculateMatrices cameraPosition cameraTarget =
   (viewMatrix, projectionMatrix)
 
 let private loopHandler config =
+  Logging.info $"dt: {config.OverallDelta}"
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
