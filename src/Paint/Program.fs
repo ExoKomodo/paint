@@ -70,7 +70,6 @@ let private calculateMatrices cameraPosition cameraTarget =
   (viewMatrix, projectionMatrix)
 
 let private loopHandler config =
-  Logging.info $"dt: {config.OverallDelta}"
   let cameraPosition = new Vector3(0f, 0f, 1f)
   let cameraTarget = new Vector3(0f, 0f, 0f)
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
