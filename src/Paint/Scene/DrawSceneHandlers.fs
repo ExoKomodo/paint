@@ -2,6 +2,7 @@ module Paint.Scene.DrawSceneHandlers
 
 open Paint.Brushes
 open Paint.Brushes.Types
+open Paint.Scene.Types
 open Paint.Types
 open SDL2Bindings
 open Womb.Types
@@ -82,11 +83,43 @@ let private handleKeyUp config (event:SDL.SDL_Event) =
 
 let private handleMouseDown config (event:SDL.SDL_Event) =
   match event.button.button |> uint32 with
-  | SDL.SDL_BUTTON_LEFT -> addLineBrushPoint config
-  | SDL.SDL_BUTTON_RIGHT -> addCirclePoint config
+  | SDL.SDL_BUTTON_LEFT ->
+      let drawScene = config.State.DrawScene
+      match drawScene.Canvas, drawScene.CircleButton, drawScene.LineButton with
+      | Some canvas, Some circleButton, Some lineButton ->
+          match
+            (
+              Womb.Graphics.Primitives.ShadedObject.Contains canvas.Primitive (config.VirtualMousePosition()),
+              Womb.Graphics.Primitives.ShadedObject.Contains circleButton.Primitive (config.VirtualMousePosition()),
+              Womb.Graphics.Primitives.ShadedObject.Contains lineButton.Primitive (config.VirtualMousePosition())
+            )
+          with
+          | (Some _, _, _) ->
+              match config.State.DrawScene.ActiveBrush with
+              | Circle -> addCirclePoint config
+              | Line -> addLineBrushPoint config
+          | (None, Some _, None) ->
+              { config with
+                  State =
+                    { config.State with
+                        DrawScene =
+                          { config.State.DrawScene with
+                              ActiveBrush = Circle } } }
+          | (None, None, Some _) ->
+              { config with
+                  State =
+                    { config.State with
+                        DrawScene =
+                          { config.State.DrawScene with
+                              ActiveBrush = Line } } }
+          | _ -> config
+      | _, _, _ ->
+          Womb.Logging.fail "Canvas, Circle, and Line must all be present"
+          config
   | _ -> config
 
 let private handleMouseUp config (event:SDL.SDL_Event) =
+  // BUG: If you mouse up off of the canvas, it will mess up the ordering and not submit the point
   handleMouseDown config event
 
 let handleEvent config (event:SDL.SDL_Event) =

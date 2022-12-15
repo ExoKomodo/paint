@@ -14,5 +14,7 @@ let create (name:string) (translation:Vector3): option<Button> =
     { Transform.Default() with
         Translation = translation }
   match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths transform width height with
-  | Some primitive -> Some { Primitive = primitive }
+  | Some primitive ->
+      { Primitive = primitive
+        Name = name } |> Some
   | None -> None

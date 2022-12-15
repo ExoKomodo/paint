@@ -3,6 +3,11 @@ module Paint.Brushes.Types
 open Womb.Graphics
 
 [<NoComparison>]
+type Brush =
+  | Circle
+  | Line
+
+[<NoComparison>]
 type CircleBrush =
   { Primitive: Primitives.ShadedObject;
     Color: single * single * single * single;

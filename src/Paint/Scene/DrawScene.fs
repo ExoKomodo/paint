@@ -127,23 +127,24 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         []
   | None -> fail "Command Panel is None"
   
+  let selectedButton =
+    match config.State.DrawScene.ActiveBrush with
+    | Circle -> "CircleButton"
+    | Line -> "LineButton"
+
   List.map
     (
       fun (buttonOpt:option<Types.Button>) ->
         match buttonOpt with
         | Some button ->
-            let idle_color = Womb.Lib.Types.Vector4(1.0f, 0.0f, 0.0f, 1.0f)
-            let hover_color = Womb.Lib.Types.Vector4(0.0f, 1.0f, 1.0f, 1.0f)
+            let idleColor = Womb.Lib.Types.Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+            let hoverColor = Womb.Lib.Types.Vector4(0.0f, 1.0f, 1.0f, 1.0f)
+            let selectedColor = Womb.Lib.Types.Vector4(0.0f, 0.0f, 1.0f, 1.0f)
             let color =
-              match button.Primitive with
-              | Primitives.ShadedObject.Quad(context, shader, transform, width, height) ->
-                  let (x, y, _) = transform.Translation
-                  let rect = new System.Drawing.RectangleF(x - (width / 2f), y - (height / 2f), width, height)
-                  let (x, y) = config.VirtualMousePosition()
-                  if rect.Contains(x, y) then
-                    hover_color
-                  else
-                    idle_color
+              match Primitives.ShadedObject.Contains button.Primitive (config.VirtualMousePosition()), selectedButton = button.Name with
+              | None, true -> selectedColor
+              | Some _, _ -> hoverColor
+              | None, _ -> idleColor
 
             Primitives.ShadedObject.Draw
               config

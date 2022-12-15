@@ -19,7 +19,8 @@ type DrawSceneState =
     CircleBrushes: list<CircleBrush>;
     CircleButton: option<Button>;
     LineButton: option<Button>;
-    LineBrushes: list<LineBrush>; }
+    LineBrushes: list<LineBrush>;
+    ActiveBrush: Brush; }
   
     static member Default () = {
       Canvas = None
@@ -27,4 +28,5 @@ type DrawSceneState =
       CircleBrushes = List.Empty
       CircleButton = None
       LineButton = None
-      LineBrushes = List.Empty }
+      LineBrushes = List.Empty
+      ActiveBrush = Circle  }
