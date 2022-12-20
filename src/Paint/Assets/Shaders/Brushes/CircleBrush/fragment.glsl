@@ -1,6 +1,6 @@
 #version 330 core
 
-out vec4 FragColor;
+out vec4 out_frag_color;
 
 uniform vec2 in_center;
 uniform float in_radius;
@@ -11,7 +11,7 @@ bool isZero(vec4 x);
 
 void main()
 {
-	FragColor = vec4(0, 0, 0, 0);
+	out_frag_color = vec4(0, 0, 0, 0);
 	
 	vec4 color = drawCircle(
 		in_center,
@@ -19,7 +19,7 @@ void main()
 		in_color
 	);
 	if (!isZero(color)) {
-		FragColor = color;
+		out_frag_color = color;
 		return;
 	}
 } 
