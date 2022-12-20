@@ -119,8 +119,39 @@ let private handleMouseDown config (event:SDL.SDL_Event) =
   | _ -> config
 
 let private handleMouseUp config (event:SDL.SDL_Event) =
-  // BUG: If you mouse up off of the canvas, it will mess up the ordering and not submit the point
-  handleMouseDown config event
+  match event.button.button |> uint32 with
+  | SDL.SDL_BUTTON_LEFT ->
+      let drawScene = config.State.DrawScene
+      match drawScene.Canvas, drawScene.CircleButton, drawScene.LineButton with
+      | Some canvas, Some circleButton, Some lineButton ->
+          match
+            (
+              Womb.Graphics.Primitives.ShadedObject.Contains circleButton.Primitive (config.VirtualMousePosition()),
+              Womb.Graphics.Primitives.ShadedObject.Contains lineButton.Primitive (config.VirtualMousePosition())
+            )
+          with
+          | (Some _, None) ->
+              { config with
+                  State =
+                    { config.State with
+                        DrawScene =
+                          { config.State.DrawScene with
+                              ActiveBrush = Circle } } }
+          | (None, Some _) ->
+              { config with
+                  State =
+                    { config.State with
+                        DrawScene =
+                          { config.State.DrawScene with
+                              ActiveBrush = Line } } }
+          | _ ->
+            match config.State.DrawScene.ActiveBrush with
+              | Circle -> addCirclePoint config
+              | Line -> addLineBrushPoint config
+      | _, _, _ ->
+          Womb.Logging.fail "Canvas, Circle, and Line must all be present"
+          config
+  | _ -> config
 
 let handleEvent config (event:SDL.SDL_Event) =
   match event.typeFSharp with
