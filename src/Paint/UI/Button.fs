@@ -6,6 +6,7 @@ open Womb.Lib.Types
 
 let create (name:string) (translation:Vector3): option<Button> =
   let fragmentPaths = [
+    "Assets/Shaders/Lib/helpers.glsl";
     $"Assets/Shaders/UI/{name}/fragment.glsl";
   ]
   let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]

@@ -138,7 +138,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         match buttonOpt with
         | Some button ->
             let idleColor = Womb.Lib.Types.Vector4(1.0f, 0.0f, 0.0f, 1.0f)
-            let hoverColor = Womb.Lib.Types.Vector4(0.0f, 1.0f, 1.0f, 1.0f)
+            let hoverColor = Womb.Lib.Types.Vector4(1.0f, 0.0f, 1.0f, 1.0f)
             let selectedColor = Womb.Lib.Types.Vector4(0.0f, 0.0f, 1.0f, 1.0f)
             let color =
               match Primitives.ShadedObject.Contains button.Primitive (config.VirtualMousePosition()), selectedButton = button.Name with
@@ -153,6 +153,7 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
               button.Primitive
               [
                 Vector4Uniform("in_color", color);
+                Vector4Uniform("in_icon_color", (0.0f, 1.0f, 0.0f, 1.0f))
               ]
         | None -> fail "Button is None"
     ) [state.DrawScene.CircleButton; state.DrawScene.LineButton] |> ignore

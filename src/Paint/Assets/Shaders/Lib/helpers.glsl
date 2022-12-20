@@ -16,6 +16,10 @@ bool isZero(vec4 x) {
   return x == VEC4_ZERO;
 }
 
+float map(float a1, float a2, float b1, float b2, float s) {
+  return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
+}
+
 vec4 drawCircle(vec2 center, float radius, vec4 color) {
   if (distance(gl_FragCoord.xy, center) <= radius) {
 		return color;
