@@ -24,11 +24,11 @@ git submodule update --recursive --remote
 #### Linux
 On Ubuntu Jammy and up, install dotnet with `apt`
 ```bash
-sudo apt install dotnet6
+sudo apt install dotnet-sdk-7.0
 ```
 
 #### Mac
-Install .NET 6 via the [downloaded installer](https://dotnet.microsoft.com/en-us/download)
+Install .NET 7 via the [downloaded installer](https://dotnet.microsoft.com/en-us/download)
 
 ### Install SDL2
 

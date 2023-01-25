@@ -1,33 +1,21 @@
 module Paint.Brushes.LineBrush
 
 open Paint.Brushes.Types
-open System.Numerics
 open Womb.Graphics
+open Womb.Lib.Types
 
 let private _create start : option<LineBrush> =
   let fragmentPaths = [
-    "Resources/Shaders/Lib/helpers.glsl";
-    "Resources/Shaders/Brushes/LineBrush/fragment.glsl";
+    "Assets/Shaders/Lib/helpers.glsl";
+    "Assets/Shaders/Brushes/LineBrush/fragment.glsl";
   ]
-  let vertexPaths = ["Resources/Shaders/Common/vertex.glsl"]
-  let vertices = [|
-    // bottom left
-    -0.5f; -0.5f; 0.0f;
-    // shared top left
-    -0.5f; 0.5f; 0.0f;
-    // shared bottom right
-    0.5f; -0.5f; 0.0f;
-    // top right
-    0.5f; 0.5f; 0.0f;
-  |]
-  let indices = [|
-    0u; 1u; 2u; // first triangle vertex order as array indices
-    1u; 2u; 3u; // second triangle vertex order as array indices
-  |]
-  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths vertices indices with
+  let vertexPaths = ["Assets/Shaders/Common/vertex.glsl"]
+  let (width, height) = 1.6f, 1.2f
+  let transform = Transform.Default()
+  match Primitives.ShadedObject.CreateQuad vertexPaths fragmentPaths transform width height with
   | Some primitive ->
       { Primitive = primitive
-        Color = new Vector4(0.0f, 1.0f, 0.3f, 0.9f)
+        Color = (0.0f, 1.0f, 0.3f, 0.4f)
         Start = start
         End = None } |> Some
   | None -> None

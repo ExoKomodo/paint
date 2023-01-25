@@ -6,10 +6,11 @@
     <WarnOn>3390;$(WarnOn)</WarnOn>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
 
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-     <DefineConstants>$(DefineConstants);TREAT_OPENGL_LINK_FAILURE_AS_ERROR</DefineConstants>
-     <DefineConstants>$(DefineConstants);INLINE_LOGGER</DefineConstants> 
+    <DefineConstants>$(DefineConstants);TREAT_OPENGL_LINK_FAILURE_AS_ERROR</DefineConstants>
     <Configurations>Release;Debug</Configurations>
+    <OtherFlags>
+      --warn:5 --warnaserror
+    </OtherFlags>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -17,43 +18,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\engine\src\Womb\Womb.fsproj">
-      <Properties Condition="$(DefineConstants.Contains('DEBUG'))">
-        DefineConstants=$(DefineConstants);DEBUG
-      </Properties>
+    <ProjectReference Include="..\..\lib\engine\src\Womb\Womb.fsproj">
       <Properties Condition="$(DefineConstants.Contains('TREAT_OPENGL_LINK_FAILURE_AS_ERROR'))">
         DefineConstants=$(DefineConstants);TREAT_OPENGL_LINK_FAILURE_AS_ERROR
-      </Properties>
-      <Properties Condition="$(DefineConstants.Contains('INLINE_LOGGER'))">
-        DefineConstants=$(DefineConstants);INLINE_LOGGER
       </Properties>
     </ProjectReference>
     
     <!-- Copy shaders on build -->
-    <Content Include="Resources\Shaders\**\*.glsl" >
+    <Content Include="Assets\Shaders\**\*.glsl" >
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     
-    <!-- Library code -->
-    <Compile Include="Lib/Graphics.fs" />
     <!-- Types -->
     <Compile Include="Brushes/Types.fs" />
-    <Compile Include="Debug/Types.fs" />
     <Compile Include="UI/Types.fs" />
-    <Compile Include="State/Types.fs" />
+    <Compile Include="Scene/Types.fs" />
+    <Compile Include="Types.fs" />
     <!-- Debug Scene -->
-    <Compile Include="Debug/Mouse.fs" />
+    <Compile Include="UI/DebugMouse.fs" />
     <!-- Rendered objects -->
     <Compile Include="Brushes/CircleBrush.fs" />
     <Compile Include="Brushes/LineBrush.fs" />
+    <Compile Include="UI/Button.fs" />
     <Compile Include="UI/Canvas.fs" />
     <Compile Include="UI/CommandPanel.fs" />
     <!-- Game scenes -->
     <Compile Include="Scene/DebugScene.fs" />
+    <Compile Include="Scene/DrawSceneHandlers.fs" />
     <Compile Include="Scene/DrawScene.fs" />
     <!-- Main -->
-    <Compile Include="Helpers.fs" />
-    <Compile Include="Handlers.fs" />
     <Compile Include="Program.fs" />
 
     <PackageReference Include="Argu" Version="6.1.1">
