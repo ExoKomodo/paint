@@ -46,7 +46,7 @@ let private drawCanvas viewMatrix projectionMatrix (config:Config<GameState>) =
       fail "Canvas is None"
       config
 
-let private drawTestLines viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
+let private drawLines viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
   List.map
     (
       fun (lineBrush:Paint.Brushes.Types.LineBrush) ->
@@ -80,7 +80,7 @@ let private drawTestLines viewMatrix projectionMatrix (viewport:Vector2) (config
     config.State.DrawScene.LineBrushes |> ignore
   config
 
-let private drawTestCircles viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
+let private drawCircles viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
   List.map
     (
       fun circleBrush ->
@@ -163,6 +163,6 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
     config.DisplayConfig.Height |> single
   )  
   drawCanvas viewMatrix projectionMatrix config |>
-    drawTestLines viewMatrix projectionMatrix viewport |>
-    drawTestCircles viewMatrix projectionMatrix viewport |>
-    drawUIElements viewMatrix projectionMatrix viewport
+    drawUIElements viewMatrix projectionMatrix viewport |>
+    drawLines viewMatrix projectionMatrix viewport |>
+    drawCircles viewMatrix projectionMatrix viewport
