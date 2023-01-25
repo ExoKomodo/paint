@@ -32,15 +32,8 @@ let createUI config =
       fail "Failed to create canvas"
       (config, None, None, None, None)
 
-let draw (config:Config<GameState>) viewMatrix projectionMatrix =
-  let viewport = new Vector2(
-    config.DisplayConfig.Width |> single,
-    config.DisplayConfig.Height |> single
-  )
-  let state = config.State
-  
-  // Draw canvas
-  match state.DrawScene.Canvas with
+let private drawCanvas viewMatrix projectionMatrix (config:Config<GameState>) =
+  match config.State.DrawScene.Canvas with
   | Some canvas ->
       Primitives.ShadedObject.Draw
         config
@@ -48,9 +41,12 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
         projectionMatrix
         canvas.Primitive
         []
-  | None -> fail "Canvas is None"
-  
-  // Draw lines on canvas
+      config
+  | None ->
+      fail "Canvas is None"
+      config
+
+let private drawTestLines viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
   List.map
     (
       fun (lineBrush:Paint.Brushes.Types.LineBrush) ->
@@ -81,9 +77,10 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
             );
           ]
     )
-    state.DrawScene.LineBrushes |> ignore
-  
-  // Draw circles on canvas
+    config.State.DrawScene.LineBrushes |> ignore
+  config
+
+let private drawTestCircles viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
   List.map
     (
       fun circleBrush ->
@@ -114,10 +111,11 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
             );
           ]
     )
-    state.DrawScene.CircleBrushes |> ignore
+    config.State.DrawScene.CircleBrushes |> ignore
+  config
 
-  // Draw UI elements on top
-  match state.DrawScene.CommandPanel with
+let private drawUIElements viewMatrix projectionMatrix (viewport:Vector2) (config:Config<GameState>) =
+  match config.State.DrawScene.CommandPanel with
   | Some commandPanel ->
       Primitives.ShadedObject.Draw
         config
@@ -156,4 +154,15 @@ let draw (config:Config<GameState>) viewMatrix projectionMatrix =
                 Vector4Uniform("in_icon_color", (0.0f, 1.0f, 0.0f, 1.0f))
               ]
         | None -> fail "Button is None"
-    ) [state.DrawScene.CircleButton; state.DrawScene.LineButton] |> ignore
+    ) [config.State.DrawScene.CircleButton; config.State.DrawScene.LineButton] |> ignore
+  config
+
+let draw (config:Config<GameState>) viewMatrix projectionMatrix =
+  let viewport = new Vector2(
+    config.DisplayConfig.Width |> single,
+    config.DisplayConfig.Height |> single
+  )  
+  drawCanvas viewMatrix projectionMatrix config |>
+    drawTestLines viewMatrix projectionMatrix viewport |>
+    drawTestCircles viewMatrix projectionMatrix viewport |>
+    drawUIElements viewMatrix projectionMatrix viewport

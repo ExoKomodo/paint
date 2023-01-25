@@ -75,10 +75,11 @@ let private loopHandler config =
   let (viewMatrix, projectionMatrix) = calculateMatrices cameraPosition cameraTarget
 
   let displayConfig = Engine.Internals.drawBegin config.DisplayConfig
-  DrawScene.draw
-    config
-    viewMatrix
-    projectionMatrix
+  let config = 
+    DrawScene.draw
+      config
+      viewMatrix
+      projectionMatrix
 
   if config.State.DebugScene.IsEnabled then
     DebugScene.draw
